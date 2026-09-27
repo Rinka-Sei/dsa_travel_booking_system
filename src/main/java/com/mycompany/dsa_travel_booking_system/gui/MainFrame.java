@@ -1,4 +1,13 @@
-package com.mycompany.dsa_travel_booking_system;
+package com.mycompany.dsa_travel_booking_system.gui;
+
+import com.mycompany.dsa_travel_booking_system.db.DBConnection;
+import com.mycompany.dsa_travel_booking_system.ds.FlightBST;
+import com.mycompany.dsa_travel_booking_system.ds.QuickSort;
+import com.mycompany.dsa_travel_booking_system.ds.UserHashTable;
+import com.mycompany.dsa_travel_booking_system.model.Flight;
+import com.mycompany.dsa_travel_booking_system.model.Hotel;
+import com.mycompany.dsa_travel_booking_system.model.PackageDeal;
+import com.mycompany.dsa_travel_booking_system.model.User;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -8,6 +17,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main graphical user interface frame for the Travel Booking System.
+ * Handles login, registration, flights, hotels, package deals, and bookings.
+ */
 public class MainFrame extends JFrame {
 
     // Global session state
@@ -48,6 +61,9 @@ public class MainFrame extends JFrame {
     private JTable tblBookings;
     private DefaultTableModel bookingModel;
 
+    /**
+     * Constructs and initializes the MainFrame window, loading existing users and UI panels.
+     */
     public MainFrame() {
         setTitle("Travel Booking System");
         setSize(850, 700);
@@ -788,6 +804,11 @@ public class MainFrame extends JFrame {
         loadBookings();
     }
 
+    /**
+     * Main entry point for the Travel Booking System application.
+     *
+     * @param args command-line arguments (unused)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MainFrame().setVisible(true);
