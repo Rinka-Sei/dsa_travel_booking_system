@@ -13,13 +13,30 @@ import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.List;
 
+/**
+ * Panel view for managing and searching flights.
+ * Provides role-based administrative controls (Add/Remove Flight) and BST-sorted departure time rendering.
+ */
 public class FlightPanel extends JPanel implements ActionListener {
-    private JTextField txtFlightId, txtDep, txtArr, txtDepTime, txtFlightPrice, txtSearchFlight;
-    private JButton btnAdd, btnDelete, btnSortBST;
+
+    private JTextField txtFlightId;
+    private JTextField txtDep;
+    private JTextField txtArr;
+    private JTextField txtDepTime;
+    private JTextField txtFlightPrice;
+    private JTextField txtSearchFlight;
+    private JButton btnAdd;
+    private JButton btnDelete;
+    private JButton btnSortBST;
     private JTable tblFlights;
     private DefaultTableModel flightModel;
     private MainFrame parentFrame;
 
+    /**
+     * Constructs the FlightPanel view and initializes its layout and components.
+     *
+     * @param parent the parent {@link MainFrame} dashboard container
+     */
     public FlightPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
@@ -108,6 +125,11 @@ public class FlightPanel extends JPanel implements ActionListener {
         loadFlightsBST();
     }
 
+    /**
+     * Handles action events for adding, deleting, and BST-sorting flight listings.
+     *
+     * @param e the ActionEvent triggered
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
@@ -152,6 +174,10 @@ public class FlightPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Loads flight records from the database and orders them chronologically using {@code ds.FlightBST} via reflection.
+     * Falls back to direct database retrieval if {@code ds.FlightBST} is not available.
+     */
     public void loadFlightsBST() {
         flightModel.setRowCount(0);
         boolean loadedViaBST = false;
@@ -191,6 +217,11 @@ public class FlightPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Filters flights by departure or arrival location query.
+     *
+     * @param query the search substring
+     */
     private void filterFlights(String query) {
         flightModel.setRowCount(0);
         try (Connection conn = DBConnection.getConnection();

@@ -14,12 +14,24 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Panel view for browsing and booking dynamic flight-hotel package deals.
+ * Utilizes {@code ds.QuickSort} via Java Reflection for sorting packages by price or hotel rating.
+ */
 public class PackagePanel extends JPanel implements ActionListener {
-    private JButton btnSortPrice, btnSortRating, btnBookPackage;
+
+    private JButton btnSortPrice;
+    private JButton btnSortRating;
+    private JButton btnBookPackage;
     private JTable tblPackages;
     private DefaultTableModel packageModel;
     private MainFrame parentFrame;
 
+    /**
+     * Constructs the PackagePanel view and initializes its controls and table layout.
+     *
+     * @param parent the parent {@link MainFrame} dashboard container
+     */
     public PackagePanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
@@ -49,6 +61,11 @@ public class PackagePanel extends JPanel implements ActionListener {
         loadPackagesQuickSort("PRICE");
     }
 
+    /**
+     * Handles action events for price sorting, rating sorting, and package booking.
+     *
+     * @param e the ActionEvent triggered
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnSortPrice) {
@@ -60,6 +77,9 @@ public class PackagePanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Persists a booking for the currently selected package deal row in the table.
+     */
     private void bookSelectedPackage() {
         int selectedRow = tblPackages.getSelectedRow();
         if (selectedRow == -1) {
@@ -86,6 +106,11 @@ public class PackagePanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Fetches all available flight and hotel records and computes Cartesian product package combinations.
+     *
+     * @return a {@link List} of combined {@link PackageDeal} objects
+     */
     private List<PackageDeal> fetchAllPackages() {
         List<PackageDeal> packages = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
@@ -115,6 +140,11 @@ public class PackagePanel extends JPanel implements ActionListener {
         return packages;
     }
 
+    /**
+     * Loads package deals and sorts them using {@code ds.QuickSort} via reflection.
+     *
+     * @param mode the sorting criterion ("PRICE" for ascending price, "RATING" for descending rating)
+     */
     public void loadPackagesQuickSort(String mode) {
         packageModel.setRowCount(0);
         List<PackageDeal> packages = fetchAllPackages();

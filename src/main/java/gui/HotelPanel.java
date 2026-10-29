@@ -10,13 +10,29 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.*;
 
+/**
+ * Panel view for managing and searching hotel listings.
+ * Provides role-based administrative controls (Add/Remove Hotel) and location search filtering.
+ */
 public class HotelPanel extends JPanel implements ActionListener {
-    private JTextField txtHotelId, txtHotelName, txtLocation, txtRating, txtHotelPrice, txtSearchHotel;
-    private JButton btnAdd, btnDelete;
+
+    private JTextField txtHotelId;
+    private JTextField txtHotelName;
+    private JTextField txtLocation;
+    private JTextField txtRating;
+    private JTextField txtHotelPrice;
+    private JTextField txtSearchHotel;
+    private JButton btnAdd;
+    private JButton btnDelete;
     private JTable tblHotels;
     private DefaultTableModel hotelModel;
     private MainFrame parentFrame;
 
+    /**
+     * Constructs the HotelPanel view and initializes components.
+     *
+     * @param parent the parent {@link MainFrame} dashboard container
+     */
     public HotelPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
@@ -100,6 +116,11 @@ public class HotelPanel extends JPanel implements ActionListener {
         loadHotels();
     }
 
+    /**
+     * Handles action events for adding and deleting hotels.
+     *
+     * @param e the ActionEvent triggered
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
@@ -142,6 +163,9 @@ public class HotelPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Loads all hotel records from the database into the JTable.
+     */
     public void loadHotels() {
         hotelModel.setRowCount(0);
         try (Connection conn = DBConnection.getConnection();
@@ -155,6 +179,11 @@ public class HotelPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Filters hotels by location or hotel name query.
+     *
+     * @param query the search substring
+     */
     private void filterHotels(String query) {
         hotelModel.setRowCount(0);
         try (Connection conn = DBConnection.getConnection();

@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * QuickSort implementation for sorting lists of travel items such as PackageDeal objects.
  *
- * Time Complexities:
+ * <p>Time Complexities:</p>
  * <ul>
  *   <li>Best / Average case: O(n log n)</li>
  *   <li>Worst case: O(n^2) when partitions are highly unbalanced</li>
  * </ul>
- * Space Complexity: O(log n) call stack space on average.
+ * <p>Space Complexity: O(log n) call stack space on average.</p>
  */
 public class QuickSort {
 
@@ -43,6 +43,14 @@ public class QuickSort {
         }
     }
 
+    /**
+     * Partitions the sub-array for price sorting around a pivot element.
+     *
+     * @param packages the list of package deals
+     * @param low      the starting index
+     * @param high     the ending index (pivot)
+     * @return the partition index
+     */
     private static int partitionPrice(List<PackageDeal> packages, int low, int high) {
         double pivot = packages.get(high).getTotalPrice();
         int i = low - 1;
@@ -82,6 +90,14 @@ public class QuickSort {
         }
     }
 
+    /**
+     * Partitions the sub-array for rating sorting around a pivot element.
+     *
+     * @param packages the list of package deals
+     * @param low      the starting index
+     * @param high     the ending index (pivot)
+     * @return the partition index
+     */
     private static int partitionRating(List<PackageDeal> packages, int low, int high) {
         double pivot = packages.get(high).getHotelRating();
         int i = low - 1;
