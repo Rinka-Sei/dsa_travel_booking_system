@@ -1,6 +1,6 @@
 # Master Framework & Domain Adaptation Guide (`master_prompt.md`)
 
-This document serves as the absolute technical reference, architectural blueprint, and adaptation guide for the Java Swing + DSA + JDBC reference framework. It details the core rules, decoupled design patterns, and exact step-by-step instructions for adapting this repository baseline into other domain-specific CRUD systems (e.g., Real Estate Management System, Movie Rental System, Hospital System, etc.).
+This document serves as the absolute technical reference, architectural blueprint, and adaptation guide for the Java Swing + DSA + JDBC reference framework. It details the core rules, decoupled design patterns, refined functional validation standards, and exact step-by-step instructions for adapting this repository baseline into other domain-specific CRUD systems (e.g., Real Estate Management System, Movie Rental System, Hospital System, etc.).
 
 ---
 
@@ -13,11 +13,61 @@ Any system built upon or derived from this framework must strictly follow these 
 | **Zero External Libraries** | Only standard JDK standard APIs (Java 21+) and the MySQL JDBC connector (`mysql-connector-j`) are allowed. | Importing third-party GUI libraries (e.g., FlatLaf, MigLayout) or data collection libraries (e.g., Guava, Commons) violates project constraints and results in a 0%. |
 | **Absolute GUI Layout** | GUI positioning must exclusively use `setLayout(null)` and explicit `setBounds(x, y, width, height)`. | No visual drag-and-drop form builders (e.g., NetBeans GUI Builder, IntelliJ GUI Designer, Eclipse WindowBuilder) may be used. |
 | **MVC Code Pattern** | Strict separation into `model` (POJOs), `ds` (Data Structures & Algorithms), `database` (JDBC Connection), and `gui` (Swing Views). | All UI frames and panels must explicitly `implements ActionListener` and override `actionPerformed(ActionEvent e)` for event handling. |
-| **Database Seeding Rule** | The database must contain **no pre-existing project data** except for the initial administrator user (`admin` / `admin123`). | All domain entities (flights, hotels, properties, movies, patients, etc.) must be inserted live via the GUI during presentation testing. |
+| **Database Seeding Rule** | Database setup scripts must reside in a root `database/` directory. `database/01_admin.sql` pre-seeds strictly the admin user (`admin` / `admin123`). `database/02_customers.sql` seeds 10 test customers and 20 sample bookings. | Domain entities for live presentations must be added live via GUI or pre-seeded cleanly using scripts in `database/`. |
 
 ---
 
-## 2. Modular Architecture & Decoupled DSA Pattern
+## 2. Refined Implementation Patterns & Validation Standards
+
+### A. Paired Input Validation & Standardized Military Time (`HH:mm`)
+Form inputs must enforce strict domain formatting before saving to database records:
+- **Paired Military Time Inputs:** Flight or event schedules must pair location fields directly next to their 24-hour military time counterparts (`"HH:mm"`).
+- **Regex Validation:** Validate inputs using regex `^([01]\d|2[0-3]):([0-5]\d)$` for both departure and arrival time fields and display a `JOptionPane` error dialog if either format is invalid.
+
+```java
+String timeRegex = "^([01]\\d|2[0-3]):([0-5]\\d)$";
+if (!depTimeInput.matches(timeRegex) || !arrTimeInput.matches(timeRegex)) {
+    JOptionPane.showMessageDialog(this,
+        "Invalid Time format! Both Departure and Arrival times must use 24-hour military time (HH:mm, e.g., 08:30 or 14:45).",
+        "Validation Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+```
+
+### B. Smart Attribute Normalization & Relational Pairing
+When combining composite domain entities (e.g., pairing Flights with Hotels into Package Deals, or Properties with Clients into Investment Bundles):
+- Strip parenthetical indicators, airport codes, and punctuation using string normalization (`replaceAll("\\s*\\(.*?\\)", "")`).
+- Perform bidirectional substring and keyword matching to pair entities accurately without requiring exact string equality.
+
+```java
+public static String normalize(String str) {
+    if (str == null) return "";
+    String norm = str.toLowerCase().trim();
+    norm = norm.replaceAll("\\s*\\(.*?\\)", ""); // Remove parenthetical codes
+    norm = norm.replaceAll("[^a-z0-9\\s]", " "); // Strip punctuation
+    return norm.replaceAll("\\s+", " ").trim();
+}
+
+public static boolean isMatch(String dest1, String dest2) {
+    String n1 = normalize(dest1);
+    String n2 = normalize(dest2);
+    return !n1.isEmpty() && !n2.isEmpty() && (n1.equals(n2) || n1.contains(n2) || n2.contains(n1));
+}
+```
+
+### C. Stateful UI Sorting Buttons with Directional Arrows
+Table sorting controls should support toggleable Ascending and Descending order with dynamic button label indicators:
+- Clicking a sort button toggles its direction (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`).
+- **Exclusive Active Indicator:** Activating one sort button resets the label of other sort buttons (e.g., clearing the arrow from `"Sort Rating"`).
+
+### D. Dynamic Cross-Panel Event Notification
+When CRUD modifications occur in parent entity panels (such as `FlightPanel` and `HotelPanel` when an admin adds or deletes an entity):
+- The panels invoke `parentFrame.refreshPackagePanel()`.
+- The dashboard orchestrator cascades the update to `PackagePanel.refreshPackages()`, triggering live re-pairing and re-sorting of combined package deals without requiring user session reload.
+
+---
+
+## 3. Modular Architecture & Decoupled DSA Pattern
 
 ### Package Architecture
 The codebase follows a decoupled 4-tier package organization:
@@ -28,35 +78,21 @@ The codebase follows a decoupled 4-tier package organization:
 4. **`gui`**: Contains Swing containers (`MainFrame`, `LoginFrame`) and modular view panels (`FlightPanel`, `HotelPanel`, `PackagePanel`, `BookingPanel`).
 
 ### Decoupled DSA via Reflection (Plug-and-Play Setup)
-To decouple the user interface from concrete data structure implementations, all GUI panels call data structure methods reflectively using `Class.forName(...)`:
+To decouple the user interface from concrete data structure implementations, GUI panels call data structure methods reflectively using `Class.forName(...)`:
 
 ```java
 try {
-    // Reflective discovery of Data Structure class
-    Class<?> bstClass = Class.forName("ds.FlightBST");
-    Object bstInstance = bstClass.getDeclaredConstructor().newInstance();
-    Method insertMethod = bstClass.getMethod("insert", Flight.class);
-    Method getSortedMethod = bstClass.getMethod("getSortedFlights");
-
-    // Populate BST and retrieve sorted results
-    for (Flight f : fetchFromDatabase()) {
-        insertMethod.invoke(bstInstance, f);
-    }
-    List<Flight> sortedFlights = (List<Flight>) getSortedMethod.invoke(bstInstance);
-    renderTable(sortedFlights);
+    Class<?> quickSortClass = Class.forName("ds.QuickSort");
+    Method sortPriceMethod = quickSortClass.getMethod("sortByPrice", List.class, int.class, int.class, boolean.class);
+    sortPriceMethod.invoke(null, packages, 0, packages.size() - 1, ascending);
 } catch (Exception e) {
-    // Graceful Fallback: Query database directly if DS class is absent/unimplemented
-    renderTable(fetchFromDatabaseDirectly());
+    // Graceful Fallback: Proceed with unsorted list or SQL ORDER BY
 }
 ```
 
-#### Key Advantages of Reflection Pattern:
-- **Zero Compilation Errors:** Removing or modifying a class inside `ds` will not break compilation of GUI components.
-- **Graceful Fallback:** If a student has not yet completed a data structure, the GUI seamlessly defaults to standard SQL queries without crashing.
-
 ---
 
-## 3. Domain Adaptation Guide (Group 9 Baseline Adaptation)
+## 4. Domain Adaptation Guide (Group 9 Baseline Adaptation)
 
 This section illustrates how future developers can transform this Travel Booking baseline system into other application domains, such as **Real Estate Management System (Item 10)** or other project themes.
 
@@ -90,10 +126,10 @@ Adapt custom data structures to property metrics:
 2. **`ClientHashTable.java` (Hash Table with Chaining)**:
    - Store and lookup client details using `clientId` or `username` as lookup keys with separate chaining.
 3. **`QuickSort.java`**:
-   - Adapt `sortByPrice()` and `sortByRating()` to sort property investment bundles by price (ascending) or property valuation rating (descending).
+   - Adapt `sortByPrice(packages, low, high, ascending)` to sort property investment bundles by price (ascending/descending) or property valuation rating.
 
-#### Step 3: Database Layer (`database/DBConnection.java` & Schema)
-Create MySQL schema `real_estate_db`:
+#### Step 3: Database Layer (`database/DBConnection.java` & Schema Scripts)
+Create MySQL schema scripts in `database/01_admin.sql` and `database/02_customers.sql`:
 ```sql
 CREATE DATABASE IF NOT EXISTS real_estate_db;
 USE real_estate_db;
@@ -145,10 +181,10 @@ Maintain the frame architecture (`MainFrame`, `LoginFrame`) and adapt view panel
 
 ---
 
-## 4. Verification & Submission Checklist
+## 5. Verification & Submission Checklist
 
 Before submitting any derived project, run the following verification steps:
 1. `mvn compile` — Ensures 100% clean compilation with Java 21+.
 2. `mvn test` — Executes JUnit 5 unit tests for all custom data structures and models.
 3. `mvn javadoc:javadoc` — Confirms all classes, methods, and time complexities are documented without JavaDoc errors.
-4. **Database Verification:** Confirm database schema contains no project data except the single initial `admin` account (`admin` / `admin123`).
+4. **Database Verification:** Confirm database schema contains scripts `database/01_admin.sql` and `database/02_customers.sql`.

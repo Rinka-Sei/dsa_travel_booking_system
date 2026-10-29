@@ -4,6 +4,50 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
+## [2026-10-30] - Quality Assurance, Dynamic Package Synchronization & Hash Table Enhancements
+
+### Added
+- **`UserHashTable.remove(String key)` Implementation & Unit Tests:**
+  - Implemented node deletion with pointer re-linking for separate chaining in `ds.UserHashTable`.
+  - Added unit test `testRemove()` in `ds.UserHashTableTest` covering single node deletion, preservation of neighboring chained nodes, and safe handling of non-existent keys.
+- **Dynamic Cross-Panel Synchronization:**
+  - Added `refreshPackages()` to `PackagePanel.java` and exposed `refreshPackagePanel()` in `MainFrame.java`.
+  - Admin addition and removal operations in both `FlightPanel.java` and `HotelPanel.java` now automatically trigger package deal re-pairing and re-sorting without requiring application restarts.
+
+### Changed
+- **Maven Configuration (`pom.xml` & `nbactions.xml`):**
+  - Updated `<exec.mainClass>` to point directly to `Main` instead of the outdated subpackage path, ensuring seamless launch via `mvn exec:java`.
+- **Documentation Updates:**
+  - Updated `README.md` and `master_prompt.md` to document dynamic panel event notification, hashtable deletion capabilities, and clean application launch specifications.
+
+---
+
+## [2026-10-30] - Paired Military Times, Root Database Scripts & Layout Refinements
+
+### Added
+- **Paired Military Departure & Arrival Times (`HH:mm`):**
+  - Updated `flights` schema with paired `departure_time` (`VARCHAR(5)`) and `arrival_time` (`VARCHAR(5)`).
+  - Updated `FlightPanel.java` input layout to pair Departure Time right next to Departure Location and Arrival Time right next to Arrival Location.
+  - Added strict regex validation (`^([01]\d|2[0-3]):([0-5]\d)$`) for both time fields.
+  - Updated `tblFlights` table headers to `["ID", "Departure", "Dep Time", "Arrival", "Arr Time", "Price"]`.
+- **Root Database Seed Scripts (`database/`):**
+  - Created `database/01_admin.sql` initializing database schema and pre-seeding default admin account (`admin` / `admin123`).
+  - Created `database/02_customers.sql` inserting exactly 10 customer accounts and 20 sample flight-hotel bookings.
+- **Smart Destination-Matching Package Deals:**
+  - Implemented `PackageDeal.normalizeDestination()` and `PackageDeal.isDestinationMatch()` to pair flights and hotels strictly when destinations match, ignoring airport codes or parenthetical indicators (e.g. Flight arrival `"Tokyo (NRT)"` matches Hotel location `"Tokyo"`).
+- **Toggleable QuickSort with Dynamic Directional Indicators:**
+  - Refactored `QuickSort.java` to support both Ascending and Descending sorting modes.
+  - Updated `PackagePanel.java` buttons (`btnSortPrice` and `btnSortRating`) with dynamic directional indicators (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`), enforcing exclusive active indicator state clearing.
+
+### Changed
+- **Unit Test Suite Updates:**
+  - Updated `ds/FlightBSTTest.java` to cover paired departure and arrival military times and chronological departure sorting.
+  - Updated `ds/QuickSortTest.java` and `model/PackageDealTest.java` to verify toggleable sorting modes and smart destination normalization.
+- **Documentation Updates:**
+  - Updated `README.md` and `master_prompt.md` to reflect paired military time validation, relational string pairing, stateful UI sorting buttons, and root `database/` seed script layout.
+
+---
+
 ## [2026-10-30] - Framework Baseline, Blueprint & Quality Assurance Phase
 
 ### Added

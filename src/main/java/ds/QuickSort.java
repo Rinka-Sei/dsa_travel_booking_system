@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * QuickSort implementation for sorting lists of travel items such as PackageDeal objects.
+ * Supports toggleable Ascending and Descending sorting modes for both total price and hotel ratings.
  *
  * <p>Time Complexities:</p>
  * <ul>
@@ -23,40 +24,47 @@ public class QuickSort {
     }
 
     /**
-     * Sorts a list of package deals in ascending order by total price using QuickSort.
+     * Sorts a list of package deals by total price in ascending order by default.
+     *
+     * @param packages the list of PackageDeal objects to sort
+     * @param low      the starting index
+     * @param high     the ending index
+     */
+    public static void sortByPrice(List<PackageDeal> packages, int low, int high) {
+        sortByPrice(packages, low, high, true);
+    }
+
+    /**
+     * Sorts a list of package deals by total price in the specified direction (ascending or descending).
      * <p>
      * Time Complexity: O(n log n) average case, O(n^2) worst case.
      * </p>
      *
-     * @param packages the list of PackageDeal objects to sort
-     * @param low      the starting index of the sub-array to sort
-     * @param high     the ending index of the sub-array to sort
+     * @param packages  the list of PackageDeal objects to sort
+     * @param low       the starting index of the sub-array to sort
+     * @param high      the ending index of the sub-array to sort
+     * @param ascending {@code true} for ascending order (low to high), {@code false} for descending order
      */
-    public static void sortByPrice(List<PackageDeal> packages, int low, int high) {
+    public static void sortByPrice(List<PackageDeal> packages, int low, int high, boolean ascending) {
         if (packages == null || packages.isEmpty()) {
             return;
         }
         if (low < high && low >= 0 && high < packages.size()) {
-            int pi = partitionPrice(packages, low, high);
-            sortByPrice(packages, low, pi - 1);
-            sortByPrice(packages, pi + 1, high);
+            int pi = partitionPrice(packages, low, high, ascending);
+            sortByPrice(packages, low, pi - 1, ascending);
+            sortByPrice(packages, pi + 1, high, ascending);
         }
     }
 
-    /**
-     * Partitions the sub-array for price sorting around a pivot element.
-     *
-     * @param packages the list of package deals
-     * @param low      the starting index
-     * @param high     the ending index (pivot)
-     * @return the partition index
-     */
-    private static int partitionPrice(List<PackageDeal> packages, int low, int high) {
+    private static int partitionPrice(List<PackageDeal> packages, int low, int high, boolean ascending) {
         double pivot = packages.get(high).getTotalPrice();
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
-            if (packages.get(j).getTotalPrice() <= pivot) {
+            boolean condition = ascending
+                    ? packages.get(j).getTotalPrice() <= pivot
+                    : packages.get(j).getTotalPrice() >= pivot;
+            if (condition) {
                 i++;
                 PackageDeal temp = packages.get(i);
                 packages.set(i, packages.get(j));
@@ -70,41 +78,47 @@ public class QuickSort {
     }
 
     /**
-     * Sorts a list of package deals in descending order by hotel rating using QuickSort.
+     * Sorts a list of package deals by hotel rating in descending order by default.
+     *
+     * @param packages the list of PackageDeal objects to sort
+     * @param low      the starting index
+     * @param high     the ending index
+     */
+    public static void sortByRating(List<PackageDeal> packages, int low, int high) {
+        sortByRating(packages, low, high, false);
+    }
+
+    /**
+     * Sorts a list of package deals by hotel rating in the specified direction.
      * <p>
      * Time Complexity: O(n log n) average case, O(n^2) worst case.
      * </p>
      *
-     * @param packages the list of PackageDeal objects to sort
-     * @param low      the starting index of the sub-array to sort
-     * @param high     the ending index of the sub-array to sort
+     * @param packages  the list of PackageDeal objects to sort
+     * @param low       the starting index of the sub-array to sort
+     * @param high      the ending index of the sub-array to sort
+     * @param ascending {@code true} for ascending order (low to high rating), {@code false} for descending order (high rating first)
      */
-    public static void sortByRating(List<PackageDeal> packages, int low, int high) {
+    public static void sortByRating(List<PackageDeal> packages, int low, int high, boolean ascending) {
         if (packages == null || packages.isEmpty()) {
             return;
         }
         if (low < high && low >= 0 && high < packages.size()) {
-            int pi = partitionRating(packages, low, high);
-            sortByRating(packages, low, pi - 1);
-            sortByRating(packages, pi + 1, high);
+            int pi = partitionRating(packages, low, high, ascending);
+            sortByRating(packages, low, pi - 1, ascending);
+            sortByRating(packages, pi + 1, high, ascending);
         }
     }
 
-    /**
-     * Partitions the sub-array for rating sorting around a pivot element.
-     *
-     * @param packages the list of package deals
-     * @param low      the starting index
-     * @param high     the ending index (pivot)
-     * @return the partition index
-     */
-    private static int partitionRating(List<PackageDeal> packages, int low, int high) {
+    private static int partitionRating(List<PackageDeal> packages, int low, int high, boolean ascending) {
         double pivot = packages.get(high).getHotelRating();
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
-            // Sort descending for rating (higher rating first)
-            if (packages.get(j).getHotelRating() >= pivot) {
+            boolean condition = ascending
+                    ? packages.get(j).getHotelRating() <= pivot
+                    : packages.get(j).getHotelRating() >= pivot;
+            if (condition) {
                 i++;
                 PackageDeal temp = packages.get(i);
                 packages.set(i, packages.get(j));

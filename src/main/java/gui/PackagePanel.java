@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Panel view for browsing and booking dynamic flight-hotel package deals.
- * Utilizes {@code ds.QuickSort} via Java Reflection for sorting packages by price or hotel rating.
+ * Features smart destination-matching filter and toggleable QuickSort buttons with directional arrow indicators.
  */
 public class PackagePanel extends JPanel implements ActionListener {
 
@@ -26,6 +26,10 @@ public class PackagePanel extends JPanel implements ActionListener {
     private JTable tblPackages;
     private DefaultTableModel packageModel;
     private MainFrame parentFrame;
+
+    private boolean priceAscending = true;
+    private boolean ratingAscending = false;
+    private String activeSortMode = "PRICE";
 
     /**
      * Constructs the PackagePanel view and initializes its controls and table layout.
@@ -37,18 +41,18 @@ public class PackagePanel extends JPanel implements ActionListener {
         setLayout(null);
         setBounds(0, 0, 790, 540);
 
-        btnSortPrice = new JButton("Sort Price");
-        btnSortPrice.setBounds(10, 10, 120, 25);
+        btnSortPrice = new JButton("Sort Price (Ascending ↑)");
+        btnSortPrice.setBounds(10, 10, 190, 25);
         btnSortPrice.addActionListener(this);
         add(btnSortPrice);
 
         btnSortRating = new JButton("Sort Rating");
-        btnSortRating.setBounds(140, 10, 120, 25);
+        btnSortRating.setBounds(210, 10, 190, 25);
         btnSortRating.addActionListener(this);
         add(btnSortRating);
 
         btnBookPackage = new JButton("Book Selected Package");
-        btnBookPackage.setBounds(270, 10, 180, 25);
+        btnBookPackage.setBounds(410, 10, 180, 25);
         btnBookPackage.addActionListener(this);
         add(btnBookPackage);
 
@@ -58,20 +62,39 @@ public class PackagePanel extends JPanel implements ActionListener {
         sp.setBounds(10, 45, 755, 470);
         add(sp);
 
-        loadPackagesQuickSort("PRICE");
+        loadPackagesQuickSort("PRICE", priceAscending);
     }
 
     /**
      * Handles action events for price sorting, rating sorting, and package booking.
+     * Toggles directional arrow indicators exclusively on the active sort button.
      *
      * @param e the ActionEvent triggered
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnSortPrice) {
-            loadPackagesQuickSort("PRICE");
+            if (!"PRICE".equals(activeSortMode)) {
+                activeSortMode = "PRICE";
+                priceAscending = true;
+            } else {
+                priceAscending = !priceAscending;
+            }
+            btnSortPrice.setText("Sort Price (" + (priceAscending ? "Ascending ↑" : "Descending ↓") + ")");
+            btnSortRating.setText("Sort Rating");
+            loadPackagesQuickSort("PRICE", priceAscending);
+
         } else if (e.getSource() == btnSortRating) {
-            loadPackagesQuickSort("RATING");
+            if (!"RATING".equals(activeSortMode)) {
+                activeSortMode = "RATING";
+                ratingAscending = false; // Default descending (higher rating first)
+            } else {
+                ratingAscending = !ratingAscending;
+            }
+            btnSortRating.setText("Sort Rating (" + (ratingAscending ? "Ascending ↑" : "Descending ↓") + ")");
+            btnSortPrice.setText("Sort Price");
+            loadPackagesQuickSort("RATING", ratingAscending);
+
         } else if (e.getSource() == btnBookPackage) {
             bookSelectedPackage();
         }
@@ -107,9 +130,10 @@ public class PackagePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Fetches all available flight and hotel records and computes Cartesian product package combinations.
+     * Fetches available flight and hotel records and constructs PackageDeal pairs strictly when
+     * flight arrival destination matches hotel location using smart string normalization.
      *
-     * @return a {@link List} of combined {@link PackageDeal} objects
+     * @return a {@link List} of destination-matched {@link PackageDeal} objects
      */
     private List<PackageDeal> fetchAllPackages() {
         List<PackageDeal> packages = new ArrayList<>();
@@ -119,19 +143,34 @@ public class PackagePanel extends JPanel implements ActionListener {
 
             List<Flight> flights = new ArrayList<>();
             while (rsF.next()) {
-                flights.add(new Flight(rsF.getString("flight_id"), rsF.getString("departure"), rsF.getString("arrival"), rsF.getInt("departure_time"), rsF.getDouble("price")));
+                flights.add(new Flight(
+                        rsF.getString("flight_id"),
+                        rsF.getString("departure"),
+                        rsF.getString("departure_time"),
+                        rsF.getString("arrival"),
+                        rsF.getString("arrival_time"),
+                        rsF.getDouble("price")
+                ));
             }
 
             Statement stmt2 = conn.createStatement();
             ResultSet rsH = stmt2.executeQuery("SELECT * FROM hotels");
             List<Hotel> hotels = new ArrayList<>();
             while (rsH.next()) {
-                hotels.add(new Hotel(rsH.getString("hotel_id"), rsH.getString("name"), rsH.getString("location"), rsH.getDouble("rating"), rsH.getDouble("price_per_night")));
+                hotels.add(new Hotel(
+                        rsH.getString("hotel_id"),
+                        rsH.getString("name"),
+                        rsH.getString("location"),
+                        rsH.getDouble("rating"),
+                        rsH.getDouble("price_per_night")
+                ));
             }
 
             for (Flight f : flights) {
                 for (Hotel h : hotels) {
-                    packages.add(new PackageDeal(f, h));
+                    if (PackageDeal.isDestinationMatch(f.getArrival(), h.getLocation())) {
+                        packages.add(new PackageDeal(f, h));
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -141,11 +180,23 @@ public class PackagePanel extends JPanel implements ActionListener {
     }
 
     /**
+     * Re-fetches all matching packages and re-renders them according to the currently active sort mode.
+     */
+    public void refreshPackages() {
+        if ("RATING".equals(activeSortMode)) {
+            loadPackagesQuickSort("RATING", ratingAscending);
+        } else {
+            loadPackagesQuickSort("PRICE", priceAscending);
+        }
+    }
+
+    /**
      * Loads package deals and sorts them using {@code ds.QuickSort} via reflection.
      *
-     * @param mode the sorting criterion ("PRICE" for ascending price, "RATING" for descending rating)
+     * @param mode      the sorting criterion ("PRICE" or "RATING")
+     * @param ascending {@code true} for ascending order, {@code false} for descending order
      */
-    public void loadPackagesQuickSort(String mode) {
+    public void loadPackagesQuickSort(String mode, boolean ascending) {
         packageModel.setRowCount(0);
         List<PackageDeal> packages = fetchAllPackages();
 
@@ -153,11 +204,21 @@ public class PackagePanel extends JPanel implements ActionListener {
             Class<?> quickSortClass = Class.forName("ds.QuickSort");
             if (!packages.isEmpty()) {
                 if ("PRICE".equals(mode)) {
-                    Method sortPriceMethod = quickSortClass.getMethod("sortByPrice", List.class, int.class, int.class);
-                    sortPriceMethod.invoke(null, packages, 0, packages.size() - 1);
+                    try {
+                        Method sortPriceMethod = quickSortClass.getMethod("sortByPrice", List.class, int.class, int.class, boolean.class);
+                        sortPriceMethod.invoke(null, packages, 0, packages.size() - 1, ascending);
+                    } catch (NoSuchMethodException e) {
+                        Method sortPriceMethod = quickSortClass.getMethod("sortByPrice", List.class, int.class, int.class);
+                        sortPriceMethod.invoke(null, packages, 0, packages.size() - 1);
+                    }
                 } else if ("RATING".equals(mode)) {
-                    Method sortRatingMethod = quickSortClass.getMethod("sortByRating", List.class, int.class, int.class);
-                    sortRatingMethod.invoke(null, packages, 0, packages.size() - 1);
+                    try {
+                        Method sortRatingMethod = quickSortClass.getMethod("sortByRating", List.class, int.class, int.class, boolean.class);
+                        sortRatingMethod.invoke(null, packages, 0, packages.size() - 1, ascending);
+                    } catch (NoSuchMethodException e) {
+                        Method sortRatingMethod = quickSortClass.getMethod("sortByRating", List.class, int.class, int.class);
+                        sortRatingMethod.invoke(null, packages, 0, packages.size() - 1);
+                    }
                 }
             }
         } catch (Exception ignored) {}

@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Binary Search Tree (BST) implementation for managing and sorting Flight objects by departure time.
+ * Binary Search Tree (BST) implementation for managing and sorting Flight objects chronologically by departure time.
+ * Supports string-based 24-hour military time comparison ("HH:mm").
  *
  * <p>Time Complexities:</p>
  * <ul>
@@ -45,7 +46,7 @@ public class FlightBST {
     }
 
     /**
-     * Inserts a flight into the BST ordered by departure time.
+     * Inserts a flight into the BST ordered chronologically by military departure time ("HH:mm").
      * <p>
      * Time Complexity: O(log n) average case, O(n) worst case.
      * </p>
@@ -67,7 +68,7 @@ public class FlightBST {
         if (root == null) {
             return new Node(flight);
         }
-        if (flight.getDepartureTime() < root.flight.getDepartureTime()) {
+        if (flight.getDepartureTime().compareTo(root.flight.getDepartureTime()) < 0) {
             root.left = insertRec(root.left, flight);
         } else {
             root.right = insertRec(root.right, flight);
@@ -76,12 +77,12 @@ public class FlightBST {
     }
 
     /**
-     * Performs an in-order traversal of the tree to retrieve all flights sorted in ascending order by departure time.
+     * Performs an in-order traversal of the tree to retrieve all flights sorted chronologically by departure time.
      * <p>
      * Time Complexity: O(n).
      * </p>
-
-     * @return a {@link List} of flights sorted chronologically by departure time
+     *
+     * @return a {@link List} of flights sorted chronologically by military departure time
      */
     public List<Flight> getSortedFlights() {
         List<Flight> list = new ArrayList<>();

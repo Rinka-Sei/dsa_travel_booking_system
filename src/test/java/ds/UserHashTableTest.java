@@ -77,6 +77,22 @@ public class UserHashTableTest {
     }
 
     @Test
+    public void testRemove() {
+        User user1 = new User("alice", "pass123", "CUSTOMER");
+        User user2 = new User("bob", "secret", "ADMIN");
+
+        userHashTable.put("alice", user1);
+        userHashTable.put("bob", user2);
+
+        User removed = userHashTable.remove("alice");
+        assertEquals(user1, removed, "Removed user should match inserted user.");
+        assertNull(userHashTable.get("alice"), "Removed user should no longer be in table.");
+        assertNotNull(userHashTable.get("bob"), "Other users should remain intact.");
+
+        assertNull(userHashTable.remove("nonexistent"), "Removing non-existent key should return null.");
+    }
+
+    @Test
     public void testInvalidCapacityThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> new UserHashTable(0),
                 "Constructor with capacity 0 should throw IllegalArgumentException.");

@@ -69,6 +69,15 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     /**
+     * Triggers a re-computation and re-render of dynamic package deals.
+     */
+    public void refreshPackagePanel() {
+        if (packagePanel != null) {
+            packagePanel.refreshPackages();
+        }
+    }
+
+    /**
      * Initializes the absolute-positioned dashboard layout and tabbed view panels.
      */
     private void initDashboardComponents() {
