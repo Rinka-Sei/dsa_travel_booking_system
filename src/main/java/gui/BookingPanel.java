@@ -1,13 +1,16 @@
-package com.mycompany.dsa_travel_booking_system.gui;
+package gui;
 
-import com.mycompany.dsa_travel_booking_system.db.DBConnection;
+import database.DBConnection;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class BookingPanel extends JPanel {
+public class BookingPanel extends JPanel implements ActionListener {
     private JTextField txtBookFlightId, txtBookHotelId;
+    private JButton btnBook, btnItinerary, btnInvoice, btnCancel;
     private JTable tblBookings;
     private DefaultTableModel bookingModel;
     private MainFrame parentFrame;
@@ -15,7 +18,7 @@ public class BookingPanel extends JPanel {
     public BookingPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
-        setBounds(0, 0, 790, 520);
+        setBounds(0, 0, 790, 540);
 
         JLabel lblFlightId = new JLabel("Flight ID:");
         lblFlightId.setBounds(10, 10, 70, 25);
@@ -33,34 +36,46 @@ public class BookingPanel extends JPanel {
         txtBookHotelId.setBounds(240, 10, 90, 25);
         add(txtBookHotelId);
 
-        JButton btnBook = new JButton("Book Package");
+        btnBook = new JButton("Book Package");
         btnBook.setBounds(340, 10, 120, 25);
+        btnBook.addActionListener(this);
         add(btnBook);
 
-        JButton btnItinerary = new JButton("View Itinerary");
+        btnItinerary = new JButton("View Itinerary");
         btnItinerary.setBounds(470, 10, 120, 25);
+        btnItinerary.addActionListener(this);
         add(btnItinerary);
 
-        JButton btnInvoice = new JButton("Invoice");
+        btnInvoice = new JButton("Invoice");
         btnInvoice.setBounds(600, 10, 80, 25);
+        btnInvoice.addActionListener(this);
         add(btnInvoice);
 
-        JButton btnCancel = new JButton("Cancel");
+        btnCancel = new JButton("Cancel");
         btnCancel.setBounds(685, 10, 80, 25);
+        btnCancel.addActionListener(this);
         add(btnCancel);
 
         bookingModel = new DefaultTableModel(new String[]{"Booking ID", "Customer", "Flight ID", "Hotel ID", "Total Price"}, 0);
         tblBookings = new JTable(bookingModel);
         JScrollPane sp = new JScrollPane(tblBookings);
-        sp.setBounds(10, 45, 755, 460);
+        sp.setBounds(10, 45, 755, 470);
         add(sp);
 
-        btnBook.addActionListener(e -> performBooking());
-        btnItinerary.addActionListener(e -> generateItinerary());
-        btnInvoice.addActionListener(e -> generateInvoice());
-        btnCancel.addActionListener(e -> cancelBooking());
-
         loadBookings();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnBook) {
+            performBooking();
+        } else if (e.getSource() == btnItinerary) {
+            generateItinerary();
+        } else if (e.getSource() == btnInvoice) {
+            generateInvoice();
+        } else if (e.getSource() == btnCancel) {
+            cancelBooking();
+        }
     }
 
     private void performBooking() {
@@ -103,7 +118,6 @@ public class BookingPanel extends JPanel {
             psInsert.setDouble(4, total);
             psInsert.executeUpdate();
 
-            // Clear text fields after booking
             txtBookFlightId.setText("");
             txtBookHotelId.setText("");
 
