@@ -23,6 +23,7 @@ public class HotelPanel extends JPanel implements ActionListener {
     private JTextField txtHotelPrice;
     private JTextField txtSearchHotel;
     private JButton btnAdd;
+    private JButton btnUpdate;
     private JButton btnDelete;
     private JTable tblHotels;
     private DefaultTableModel hotelModel;
@@ -86,8 +87,13 @@ public class HotelPanel extends JPanel implements ActionListener {
             btnAdd.addActionListener(this);
             add(btnAdd);
 
+            btnUpdate = new JButton("Update Selected");
+            btnUpdate.setBounds(395, 45, 135, 25);
+            btnUpdate.addActionListener(this);
+            add(btnUpdate);
+
             btnDelete = new JButton("Remove Selected");
-            btnDelete.setBounds(400, 45, 140, 25);
+            btnDelete.setBounds(535, 45, 140, 25);
             btnDelete.addActionListener(this);
             add(btnDelete);
         }
@@ -109,6 +115,18 @@ public class HotelPanel extends JPanel implements ActionListener {
 
         hotelModel = new DefaultTableModel(new String[]{"ID", "Name", "Location", "Rating", "Price/Night"}, 0);
         tblHotels = new JTable(hotelModel);
+        if (isAdmin) {
+            tblHotels.getSelectionModel().addListSelectionListener(event -> {
+                if (!event.getValueIsAdjusting() && tblHotels.getSelectedRow() != -1) {
+                    int r = tblHotels.getSelectedRow();
+                    txtHotelId.setText(tblHotels.getValueAt(r, 0).toString());
+                    txtHotelName.setText(tblHotels.getValueAt(r, 1).toString());
+                    txtLocation.setText(tblHotels.getValueAt(r, 2).toString());
+                    txtRating.setText(tblHotels.getValueAt(r, 3).toString());
+                    txtHotelPrice.setText(tblHotels.getValueAt(r, 4).toString());
+                }
+            });
+        }
         JScrollPane sp = new JScrollPane(tblHotels);
         sp.setBounds(10, isAdmin ? 120 : 45, 755, isAdmin ? 370 : 450);
         add(sp);
@@ -146,6 +164,29 @@ public class HotelPanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Hotel added successfully!");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
+        } else if (e.getSource() == btnUpdate) {
+            int selectedRow = tblHotels.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a hotel from the table to update.");
+                return;
+            }
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement("UPDATE hotels SET name = ?, location = ?, rating = ?, price_per_night = ? WHERE hotel_id = ?")) {
+                ps.setString(1, txtHotelName.getText().trim());
+                ps.setString(2, txtLocation.getText().trim());
+                ps.setDouble(3, Double.parseDouble(txtRating.getText().trim()));
+                ps.setDouble(4, Double.parseDouble(txtHotelPrice.getText().trim()));
+                ps.setString(5, txtHotelId.getText().trim());
+                ps.executeUpdate();
+
+                loadHotels();
+                if (parentFrame != null) {
+                    parentFrame.refreshPackagePanel();
+                }
+                JOptionPane.showMessageDialog(this, "Hotel updated successfully!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error updating hotel: " + ex.getMessage());
             }
         } else if (e.getSource() == btnDelete) {
             int selectedRow = tblHotels.getSelectedRow();

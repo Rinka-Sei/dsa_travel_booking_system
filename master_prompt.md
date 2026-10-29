@@ -70,12 +70,13 @@ When CRUD modifications occur in parent entity panels (such as `FlightPanel` and
 ## 3. Modular Architecture & Decoupled DSA Pattern
 
 ### Package Architecture
-The codebase follows a decoupled 4-tier package organization:
+The codebase follows a decoupled 5-tier package organization:
 
 1. **`model`**: Contains lightweight Plain Old Java Objects (POJOs) representing domain entities with private fields, getters, setters, and constructors.
-2. **`ds`**: Contains hand-crafted Data Structures and Algorithms implemented from scratch (e.g., Binary Search Trees, Custom Hash Tables, QuickSort implementations).
-3. **`database`**: Provides static JDBC connection management via `DBConnection.java`.
-4. **`gui`**: Contains Swing containers (`MainFrame`, `LoginFrame`) and modular view panels (`FlightPanel`, `HotelPanel`, `PackagePanel`, `BookingPanel`).
+2. **`ds`**: Contains hand-crafted Data Structures and Algorithms implemented from scratch (Binary Search Trees, Custom Hash Tables, QuickSort implementations, and Priority Queues).
+3. **`service`**: Coordinates business logic, validation, data structure interaction, and reports (`FlightCatalogService`, `CustomerRegistryService`, `BookingManagementService`).
+4. **`database`**: Provides static JDBC connection management via `DBConnection.java`.
+5. **`gui`**: Contains Swing containers (`MainFrame`, `LoginFrame`) and modular view panels (`FlightPanel`, `HotelPanel`, `PackagePanel`, `BookingPanel`).
 
 ### Decoupled DSA via Reflection (Plug-and-Play Setup)
 To decouple the user interface from concrete data structure implementations, GUI panels call data structure methods reflectively using `Class.forName(...)`:

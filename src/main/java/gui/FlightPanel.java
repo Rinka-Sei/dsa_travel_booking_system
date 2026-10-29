@@ -28,6 +28,7 @@ public class FlightPanel extends JPanel implements ActionListener {
     private JTextField txtFlightPrice;
     private JTextField txtSearchFlight;
     private JButton btnAdd;
+    private JButton btnUpdate;
     private JButton btnDelete;
     private JButton btnSortBST;
     private JTable tblFlights;
@@ -100,8 +101,13 @@ public class FlightPanel extends JPanel implements ActionListener {
             btnAdd.addActionListener(this);
             add(btnAdd);
 
+            btnUpdate = new JButton("Update Selected");
+            btnUpdate.setBounds(125, 45, 135, 25);
+            btnUpdate.addActionListener(this);
+            add(btnUpdate);
+
             btnDelete = new JButton("Remove Selected");
-            btnDelete.setBounds(130, 45, 150, 25);
+            btnDelete.setBounds(265, 45, 140, 25);
             btnDelete.addActionListener(this);
             add(btnDelete);
         }
@@ -128,6 +134,19 @@ public class FlightPanel extends JPanel implements ActionListener {
 
         flightModel = new DefaultTableModel(new String[]{"ID", "Departure", "Dep Time", "Arrival", "Arr Time", "Price"}, 0);
         tblFlights = new JTable(flightModel);
+        if (isAdmin) {
+            tblFlights.getSelectionModel().addListSelectionListener(event -> {
+                if (!event.getValueIsAdjusting() && tblFlights.getSelectedRow() != -1) {
+                    int r = tblFlights.getSelectedRow();
+                    txtFlightId.setText(tblFlights.getValueAt(r, 0).toString());
+                    txtDep.setText(tblFlights.getValueAt(r, 1).toString());
+                    txtDepTime.setText(tblFlights.getValueAt(r, 2).toString());
+                    txtArr.setText(tblFlights.getValueAt(r, 3).toString());
+                    txtArrTime.setText(tblFlights.getValueAt(r, 4).toString());
+                    txtFlightPrice.setText(tblFlights.getValueAt(r, 5).toString());
+                }
+            });
+        }
         JScrollPane sp = new JScrollPane(tblFlights);
         sp.setBounds(10, isAdmin ? 115 : 45, 755, isAdmin ? 380 : 450);
         add(sp);
@@ -180,6 +199,42 @@ public class FlightPanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Flight added successfully!");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
+        } else if (e.getSource() == btnUpdate) {
+            int selectedRow = tblFlights.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a flight from the table to update.");
+                return;
+            }
+            String depTimeInput = txtDepTime.getText().trim();
+            String arrTimeInput = txtArrTime.getText().trim();
+            String timeRegex = "^([01]\\d|2[0-3]):([0-5]\\d)$";
+
+            if (!depTimeInput.matches(timeRegex) || !arrTimeInput.matches(timeRegex)) {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid Time format! Both Departure and Arrival times must use 24-hour military time (HH:mm, e.g., 08:30 or 14:45).",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement("UPDATE flights SET departure = ?, departure_time = ?, arrival = ?, arrival_time = ?, price = ? WHERE flight_id = ?")) {
+                ps.setString(1, txtDep.getText().trim());
+                ps.setString(2, depTimeInput);
+                ps.setString(3, txtArr.getText().trim());
+                ps.setString(4, arrTimeInput);
+                ps.setDouble(5, Double.parseDouble(txtFlightPrice.getText().trim()));
+                ps.setString(6, txtFlightId.getText().trim());
+                ps.executeUpdate();
+
+                loadFlightsBST();
+                if (parentFrame != null) {
+                    parentFrame.refreshPackagePanel();
+                }
+                JOptionPane.showMessageDialog(this, "Flight updated successfully!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error updating flight: " + ex.getMessage());
             }
         } else if (e.getSource() == btnDelete) {
             int selectedRow = tblFlights.getSelectedRow();

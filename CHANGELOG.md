@@ -4,6 +4,25 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
+## [2026-10-30] - Full CRUD Updates, Service Layer Architecture, Priority Queue & Executive Reports
+
+### Added
+- **Complete End-to-End Update Operations ("U" in CRUD):**
+  - Added "Update Selected" buttons and table row selection listeners in `FlightPanel.java` and `HotelPanel.java`.
+  - Updating a flight or hotel updates MySQL and automatically re-syncs dynamic package deals across panels.
+- **Dedicated Service Layer Architecture (`service/`):**
+  - Implemented `FlightCatalogService.java` for coordinating flight persistence and BST sorting.
+  - Implemented `CustomerRegistryService.java` for user management and caching via `UserHashTable`.
+  - Implemented `BookingManagementService.java` for hotel CRUD, booking workflows, and priority queue ordering.
+- **`BookingPriorityQueue` (Priority Queue DSA) & Unit Tests:**
+  - Implemented `ds.BookingPriorityQueue` (heap-backed transaction ordering) with comprehensive JUnit 5 tests (`BookingPriorityQueueTest.java`).
+- **Executive System Summary Reporting:**
+  - Added on-demand revenue and customer booking activity reporting accessible via a "Report" button on `BookingPanel.java`.
+- **Database Self-Refreshing Drop Scripts:**
+  - Updated `database/01_admin.sql` to safely drop existing tables in reverse foreign key order (`bookings -> hotels -> flights -> users`) before recreating them to cleanly prepare for `database/02_customers.sql`.
+
+---
+
 ## [2026-10-30] - Quality Assurance, Dynamic Package Synchronization & Hash Table Enhancements
 
 ### Added
