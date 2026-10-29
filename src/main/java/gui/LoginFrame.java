@@ -9,15 +9,24 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.sql.*;
 
+/**
+ * Login and registration view for authentication in the Travel Booking System.
+ * Supports role-based authentication (ADMIN and CUSTOMER) and integrates
+ * with {@code ds.UserHashTable} via Java reflection for decoupled caching.
+ */
 public class LoginFrame extends JFrame implements ActionListener {
 
     private JTextField txtUsername;
     private JPasswordField txtPassword;
-    private JButton btnLogin, btnRegister;
+    private JButton btnLogin;
+    private JButton btnRegister;
     private Object userTableInstance = null;
     private Method hashTablePutMethod = null;
     private Method hashTableGetMethod = null;
 
+    /**
+     * Constructs and initializes the LoginFrame window and components.
+     */
     public LoginFrame() {
         setTitle("Travel Booking System - Login");
         setSize(450, 350);
@@ -30,6 +39,9 @@ public class LoginFrame extends JFrame implements ActionListener {
         initUI();
     }
 
+    /**
+     * Initializes reflection handles for {@code ds.UserHashTable} if available.
+     */
     private void initHashTableReflection() {
         try {
             Class<?> hashTableClass = Class.forName("ds.UserHashTable");
@@ -41,6 +53,9 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Loads existing users from the MySQL database into the hash table cache via reflection.
+     */
     private void loadUsersIntoHashTable() {
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -58,6 +73,9 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Initializes absolute-positioned Swing UI elements.
+     */
     private void initUI() {
         JLabel lblTitle = new JLabel("TRAVEL BOOKING SYSTEM LOGIN");
         lblTitle.setBounds(110, 30, 250, 30);
@@ -90,6 +108,11 @@ public class LoginFrame extends JFrame implements ActionListener {
         add(btnRegister);
     }
 
+    /**
+     * Handles user interaction events for login and registration buttons.
+     *
+     * @param e the ActionEvent triggered by clicking login or register
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnLogin) {

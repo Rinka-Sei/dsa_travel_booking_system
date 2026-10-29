@@ -8,13 +8,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/**
+ * Panel view for managing customer bookings, itineraries, and printable invoices.
+ * Supports booking creation, cancellation, itinerary summaries, and invoice generation.
+ */
 public class BookingPanel extends JPanel implements ActionListener {
-    private JTextField txtBookFlightId, txtBookHotelId;
-    private JButton btnBook, btnItinerary, btnInvoice, btnCancel;
+
+    private JTextField txtBookFlightId;
+    private JTextField txtBookHotelId;
+    private JButton btnBook;
+    private JButton btnItinerary;
+    private JButton btnInvoice;
+    private JButton btnCancel;
     private JTable tblBookings;
     private DefaultTableModel bookingModel;
     private MainFrame parentFrame;
 
+    /**
+     * Constructs the BookingPanel view and initializes its controls and table.
+     *
+     * @param parent the parent {@link MainFrame} dashboard container
+     */
     public BookingPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
@@ -65,6 +79,11 @@ public class BookingPanel extends JPanel implements ActionListener {
         loadBookings();
     }
 
+    /**
+     * Handles action events for booking creation, itinerary display, invoice generation, and cancellation.
+     *
+     * @param e the ActionEvent triggered
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnBook) {
@@ -78,6 +97,9 @@ public class BookingPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Creates a new booking in the database based on the provided flight and hotel IDs.
+     */
     private void performBooking() {
         String fId = txtBookFlightId.getText().trim();
         String hId = txtBookHotelId.getText().trim();
@@ -129,6 +151,10 @@ public class BookingPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Loads booking records from the database into the JTable.
+     * Administrators see all user bookings, whereas customers see only their own bookings.
+     */
     public void loadBookings() {
         bookingModel.setRowCount(0);
         try (Connection conn = DBConnection.getConnection()) {
@@ -154,6 +180,9 @@ public class BookingPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Generates and displays a detailed travel itinerary for the selected booking entry.
+     */
     private void generateItinerary() {
         int selectedRow = tblBookings.getSelectedRow();
         if (selectedRow == -1) {
@@ -205,6 +234,9 @@ public class BookingPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Generates and displays a text invoice dialog for the selected booking entry.
+     */
     private void generateInvoice() {
         int selectedRow = tblBookings.getSelectedRow();
         if (selectedRow == -1) {
@@ -232,6 +264,9 @@ public class BookingPanel extends JPanel implements ActionListener {
         JOptionPane.showMessageDialog(this, invoice, "Invoice Details", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Cancels the selected booking record from the database upon user confirmation.
+     */
     private void cancelBooking() {
         int selectedRow = tblBookings.getSelectedRow();
         if (selectedRow == -1) {
