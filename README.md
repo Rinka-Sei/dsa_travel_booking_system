@@ -7,8 +7,9 @@ An educational, open-source Java Swing CRUD application system designed as a ref
 ## 🚀 Key Functional Features & Updates
 
 - **Paired Military Time Formatting & Validation (`HH:mm`):** Flight departure and arrival times are stored in strict 24-hour military time format (`"HH:mm"`, e.g., `"08:30"`, `"14:45"`, `"22:15"`). Form inputs pair Departure Time next to Departure Location and Arrival Time next to Arrival Location, validated via strict regex (`^([01]\d|2[0-3]):([0-5]\d)$`) with visual error popups.
-- **Smart Destination-Matching Package Deals:** Dynamic flight and hotel pairing evaluates destinations to ensure only matching locations are combined (e.g., Flight arrival `"Tokyo (NRT)"` matches Hotel location `"Tokyo"` via string normalization and bidirectional substring matching).
+- **Smart Destination-Matching Package Deals:** Dynamic flight and hotel pairing evaluates destinations to ensure only matching locations are combined (e.g., Flight arrival `"Tokyo (NRT)"` matches Hotel location `"Tokyo"` via string normalization and bidirectional substring matching). Dynamic re-pairing is triggered automatically whenever flights or hotels are added or deleted by an administrator.
 - **Interactive Toggleable QuickSort Buttons:** Sorting controls (`btnSortPrice` and `btnSortRating`) toggle between Ascending and Descending order. Dynamic directional indicators (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`) update active buttons while resetting inactive indicators.
+- **Custom User Hash Table with Full CRUD:** Custom hash table supporting insertion, retrieval, and collision-safe separate chaining node deletion (`remove()`).
 - **Role-Based Access Control:** `ADMIN` users can add/remove flights and hotels, while `CUSTOMER` users browse, search, book packages, view itineraries, and generate invoices.
 
 ---

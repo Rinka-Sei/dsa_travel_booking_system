@@ -92,6 +92,38 @@ public class UserHashTable {
     }
 
     /**
+     * Removes the user associated with the specified key from the hash table.
+     * <p>
+     * Time Complexity: O(1) average case, O(n) worst case.
+     * </p>
+     *
+     * @param key the lookup key (username)
+     * @return the removed {@link User} object if found; {@code null} otherwise
+     */
+    public User remove(String key) {
+        if (key == null) {
+            return null;
+        }
+        int index = getBucketIndex(key);
+        HashNode head = buckets[index];
+        HashNode prev = null;
+
+        while (head != null) {
+            if (head.key.equals(key)) {
+                if (prev != null) {
+                    prev.next = head.next;
+                } else {
+                    buckets[index] = head.next;
+                }
+                return head.value;
+            }
+            prev = head;
+            head = head.next;
+        }
+        return null;
+    }
+
+    /**
      * Retrieves the user associated with the specified key.
      * <p>
      * Time Complexity: O(1) average case, O(n) worst case.

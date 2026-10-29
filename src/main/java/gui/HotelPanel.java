@@ -140,6 +140,9 @@ public class HotelPanel extends JPanel implements ActionListener {
                 txtHotelPrice.setText("");
 
                 loadHotels();
+                if (parentFrame != null) {
+                    parentFrame.refreshPackagePanel();
+                }
                 JOptionPane.showMessageDialog(this, "Hotel added successfully!");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
@@ -156,6 +159,9 @@ public class HotelPanel extends JPanel implements ActionListener {
                 ps.setString(1, hotelId);
                 ps.executeUpdate();
                 loadHotels();
+                if (parentFrame != null) {
+                    parentFrame.refreshPackagePanel();
+                }
                 JOptionPane.showMessageDialog(this, "Hotel removed successfully.");
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Error removing hotel: " + ex.getMessage());

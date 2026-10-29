@@ -174,6 +174,9 @@ public class FlightPanel extends JPanel implements ActionListener {
                 txtFlightPrice.setText("");
 
                 loadFlightsBST();
+                if (parentFrame != null) {
+                    parentFrame.refreshPackagePanel();
+                }
                 JOptionPane.showMessageDialog(this, "Flight added successfully!");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
@@ -190,6 +193,9 @@ public class FlightPanel extends JPanel implements ActionListener {
                 ps.setString(1, flightId);
                 ps.executeUpdate();
                 loadFlightsBST();
+                if (parentFrame != null) {
+                    parentFrame.refreshPackagePanel();
+                }
                 JOptionPane.showMessageDialog(this, "Flight removed successfully.");
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Error removing flight: " + ex.getMessage());

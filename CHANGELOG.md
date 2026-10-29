@@ -4,6 +4,24 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
+## [2026-10-30] - Quality Assurance, Dynamic Package Synchronization & Hash Table Enhancements
+
+### Added
+- **`UserHashTable.remove(String key)` Implementation & Unit Tests:**
+  - Implemented node deletion with pointer re-linking for separate chaining in `ds.UserHashTable`.
+  - Added unit test `testRemove()` in `ds.UserHashTableTest` covering single node deletion, preservation of neighboring chained nodes, and safe handling of non-existent keys.
+- **Dynamic Cross-Panel Synchronization:**
+  - Added `refreshPackages()` to `PackagePanel.java` and exposed `refreshPackagePanel()` in `MainFrame.java`.
+  - Admin addition and removal operations in both `FlightPanel.java` and `HotelPanel.java` now automatically trigger package deal re-pairing and re-sorting without requiring application restarts.
+
+### Changed
+- **Maven Configuration (`pom.xml` & `nbactions.xml`):**
+  - Updated `<exec.mainClass>` to point directly to `Main` instead of the outdated subpackage path, ensuring seamless launch via `mvn exec:java`.
+- **Documentation Updates:**
+  - Updated `README.md` and `master_prompt.md` to document dynamic panel event notification, hashtable deletion capabilities, and clean application launch specifications.
+
+---
+
 ## [2026-10-30] - Paired Military Times, Root Database Scripts & Layout Refinements
 
 ### Added

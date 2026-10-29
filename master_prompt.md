@@ -60,6 +60,11 @@ Table sorting controls should support toggleable Ascending and Descending order 
 - Clicking a sort button toggles its direction (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`).
 - **Exclusive Active Indicator:** Activating one sort button resets the label of other sort buttons (e.g., clearing the arrow from `"Sort Rating"`).
 
+### D. Dynamic Cross-Panel Event Notification
+When CRUD modifications occur in parent entity panels (such as `FlightPanel` and `HotelPanel` when an admin adds or deletes an entity):
+- The panels invoke `parentFrame.refreshPackagePanel()`.
+- The dashboard orchestrator cascades the update to `PackagePanel.refreshPackages()`, triggering live re-pairing and re-sorting of combined package deals without requiring user session reload.
+
 ---
 
 ## 3. Modular Architecture & Decoupled DSA Pattern

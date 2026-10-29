@@ -1,6 +1,7 @@
 package gui;
 
 import database.DBConnection;
+import model.PackageDeal;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,7 +11,7 @@ import java.sql.*;
 
 /**
  * Panel view for managing customer bookings, itineraries, and printable invoices.
- * Supports booking creation, cancellation, itinerary summaries, and invoice generation.
+ * Supports booking creation with destination matching verification, cancellation, itinerary summaries, and invoice generation.
  */
 public class BookingPanel extends JPanel implements ActionListener {
 
@@ -99,6 +100,7 @@ public class BookingPanel extends JPanel implements ActionListener {
 
     /**
      * Creates a new booking in the database based on the provided flight and hotel IDs.
+     * Verifies that the flight arrival destination and hotel location match, displaying a warning if there is a mismatch.
      */
     private void performBooking() {
         String fId = txtBookFlightId.getText().trim();
@@ -111,23 +113,43 @@ public class BookingPanel extends JPanel implements ActionListener {
 
         double flightPrice = 0;
         double hotelPrice = 0;
+        String flightArrival = null;
+        String hotelLocation = null;
 
         try (Connection conn = DBConnection.getConnection()) {
             if (!fId.isEmpty()) {
-                PreparedStatement ps = conn.prepareStatement("SELECT price FROM flights WHERE flight_id = ?");
+                PreparedStatement ps = conn.prepareStatement("SELECT arrival, price FROM flights WHERE flight_id = ?");
                 ps.setString(1, fId);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
+                    flightArrival = rs.getString("arrival");
                     flightPrice = rs.getDouble("price");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Flight ID '" + fId + "' not found.", "Invalid Flight ID", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
             }
 
             if (!hId.isEmpty()) {
-                PreparedStatement ps = conn.prepareStatement("SELECT price_per_night FROM hotels WHERE hotel_id = ?");
+                PreparedStatement ps = conn.prepareStatement("SELECT location, price_per_night FROM hotels WHERE hotel_id = ?");
                 ps.setString(1, hId);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
+                    hotelLocation = rs.getString("location");
                     hotelPrice = rs.getDouble("price_per_night");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hotel ID '" + hId + "' not found.", "Invalid Hotel ID", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            }
+
+            if (!fId.isEmpty() && !hId.isEmpty() && flightArrival != null && hotelLocation != null) {
+                if (!PackageDeal.isDestinationMatch(flightArrival, hotelLocation)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Destination mismatch! Flight arrival ('" + flightArrival + "') does not match hotel location ('" + hotelLocation + "').",
+                            "Location Mismatch Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
             }
 

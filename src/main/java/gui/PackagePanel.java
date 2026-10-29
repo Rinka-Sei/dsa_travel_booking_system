@@ -180,6 +180,17 @@ public class PackagePanel extends JPanel implements ActionListener {
     }
 
     /**
+     * Re-fetches all matching packages and re-renders them according to the currently active sort mode.
+     */
+    public void refreshPackages() {
+        if ("RATING".equals(activeSortMode)) {
+            loadPackagesQuickSort("RATING", ratingAscending);
+        } else {
+            loadPackagesQuickSort("PRICE", priceAscending);
+        }
+    }
+
+    /**
      * Loads package deals and sorts them using {@code ds.QuickSort} via reflection.
      *
      * @param mode      the sorting criterion ("PRICE" or "RATING")
