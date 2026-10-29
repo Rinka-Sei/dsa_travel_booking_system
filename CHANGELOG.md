@@ -4,28 +4,29 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
-## [2026-10-30] - Functional Enhancements, Smart Pairing & Toggleable QuickSort
+## [2026-10-30] - Paired Military Times, Root Database Scripts & Layout Refinements
 
 ### Added
-- **24-Hour Military Time Validation (`HH:mm`):**
-  - Updated `flights` schema to store departure times as `VARCHAR(5)` strings formatted as `"HH:mm"`.
-  - Added strict regex validation (`^([01]\d|2[0-3]):([0-5]\d)$`) in `FlightPanel.java` with warning dialogs for invalid time entries.
-  - Created SQL database scripts `01_admin.sql` (schema setup & admin seeding) and `02_customers.sql` (empty template enforcing live GUI seeding).
+- **Paired Military Departure & Arrival Times (`HH:mm`):**
+  - Updated `flights` schema with paired `departure_time` (`VARCHAR(5)`) and `arrival_time` (`VARCHAR(5)`).
+  - Updated `FlightPanel.java` input layout to pair Departure Time right next to Departure Location and Arrival Time right next to Arrival Location.
+  - Added strict regex validation (`^([01]\d|2[0-3]):([0-5]\d)$`) for both time fields.
+  - Updated `tblFlights` table headers to `["ID", "Departure", "Dep Time", "Arrival", "Arr Time", "Price"]`.
+- **Root Database Seed Scripts (`database/`):**
+  - Created `database/01_admin.sql` initializing database schema and pre-seeding default admin account (`admin` / `admin123`).
+  - Created `database/02_customers.sql` inserting exactly 10 customer accounts and 20 sample flight-hotel bookings.
 - **Smart Destination-Matching Package Deals:**
-  - Implemented `PackageDeal.normalizeDestination()` and `PackageDeal.isDestinationMatch()` to pair flights and hotels strictly when destinations match.
-  - Ignores airport code suffixes and parenthetical indicators (e.g., Flight arrival `"Tokyo (NRT)"` matches Hotel location `"Tokyo"`).
-- **Toggleable QuickSort with Dynamic Directional Arrows:**
-  - Refactored `QuickSort.java` to support both Ascending and Descending sorting modes for price and hotel rating.
-  - Updated `PackagePanel.java` sort buttons (`btnSortPrice` and `btnSortRating`) with dynamic directional indicators (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`).
-  - Enforced exclusive active indicator state clearing on inactive sort buttons.
+  - Implemented `PackageDeal.normalizeDestination()` and `PackageDeal.isDestinationMatch()` to pair flights and hotels strictly when destinations match, ignoring airport codes or parenthetical indicators (e.g. Flight arrival `"Tokyo (NRT)"` matches Hotel location `"Tokyo"`).
+- **Toggleable QuickSort with Dynamic Directional Indicators:**
+  - Refactored `QuickSort.java` to support both Ascending and Descending sorting modes.
+  - Updated `PackagePanel.java` buttons (`btnSortPrice` and `btnSortRating`) with dynamic directional indicators (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`), enforcing exclusive active indicator state clearing.
 
 ### Changed
-- **Unit Test Suite Expansion:**
-  - Updated `ds/FlightBSTTest.java` to test chronological sorting with string military time (`"08:30"`, `"12:00"`, `"14:45"`, `"22:15"`).
-  - Updated `ds/QuickSortTest.java` to verify both ascending and descending sorting modes across price and rating edge cases.
-  - Updated `model/PackageDealTest.java` to test destination normalization and smart matching rules.
+- **Unit Test Suite Updates:**
+  - Updated `ds/FlightBSTTest.java` to cover paired departure and arrival military times and chronological departure sorting.
+  - Updated `ds/QuickSortTest.java` and `model/PackageDealTest.java` to verify toggleable sorting modes and smart destination normalization.
 - **Documentation Updates:**
-  - Updated `README.md` and `master_prompt.md` framework guide with new patterns for military time validation, relational string pairing, and stateful UI sorting buttons.
+  - Updated `README.md` and `master_prompt.md` to reflect paired military time validation, relational string pairing, stateful UI sorting buttons, and root `database/` seed script layout.
 
 ---
 

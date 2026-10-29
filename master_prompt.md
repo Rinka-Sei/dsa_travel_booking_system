@@ -13,22 +13,23 @@ Any system built upon or derived from this framework must strictly follow these 
 | **Zero External Libraries** | Only standard JDK standard APIs (Java 21+) and the MySQL JDBC connector (`mysql-connector-j`) are allowed. | Importing third-party GUI libraries (e.g., FlatLaf, MigLayout) or data collection libraries (e.g., Guava, Commons) violates project constraints and results in a 0%. |
 | **Absolute GUI Layout** | GUI positioning must exclusively use `setLayout(null)` and explicit `setBounds(x, y, width, height)`. | No visual drag-and-drop form builders (e.g., NetBeans GUI Builder, IntelliJ GUI Designer, Eclipse WindowBuilder) may be used. |
 | **MVC Code Pattern** | Strict separation into `model` (POJOs), `ds` (Data Structures & Algorithms), `database` (JDBC Connection), and `gui` (Swing Views). | All UI frames and panels must explicitly `implements ActionListener` and override `actionPerformed(ActionEvent e)` for event handling. |
-| **Database Seeding Rule** | The database must contain **no pre-existing project data** except for the initial administrator user (`admin` / `admin123`). | All domain entities (flights, hotels, properties, movies, patients, etc.) must be inserted live via the GUI during presentation testing using scripts `01_admin.sql` and `02_customers.sql`. |
+| **Database Seeding Rule** | Database setup scripts must reside in a root `database/` directory. `database/01_admin.sql` pre-seeds strictly the admin user (`admin` / `admin123`). `database/02_customers.sql` seeds 10 test customers and 20 sample bookings. | Domain entities for live presentations must be added live via GUI or pre-seeded cleanly using scripts in `database/`. |
 
 ---
 
 ## 2. Refined Implementation Patterns & Validation Standards
 
-### A. Strict Input Validation & Standardized Formatting
+### A. Paired Input Validation & Standardized Military Time (`HH:mm`)
 Form inputs must enforce strict domain formatting before saving to database records:
-- **Military Time Validation (`HH:mm`):** Departure times or time slots must be formatted as 24-hour military time (`"HH:mm"`). Validate inputs using regex `^([01]\d|2[0-3]):([0-5]\d)$` and display a `JOptionPane` warning if invalid.
+- **Paired Military Time Inputs:** Flight or event schedules must pair location fields directly next to their 24-hour military time counterparts (`"HH:mm"`).
+- **Regex Validation:** Validate inputs using regex `^([01]\d|2[0-3]):([0-5]\d)$` for both departure and arrival time fields and display a `JOptionPane` error dialog if either format is invalid.
 
 ```java
-String timeInput = txtDepTime.getText().trim();
-if (!timeInput.matches("^([01]\\d|2[0-3]):([0-5]\\d)$")) {
+String timeRegex = "^([01]\\d|2[0-3]):([0-5]\\d)$";
+if (!depTimeInput.matches(timeRegex) || !arrTimeInput.matches(timeRegex)) {
     JOptionPane.showMessageDialog(this,
-        "Invalid Time format! Please use 24-hour military time (HH:mm, e.g., 08:30 or 14:45).",
-        "Validation Error", JOptionPane.WARNING_MESSAGE);
+        "Invalid Time format! Both Departure and Arrival times must use 24-hour military time (HH:mm, e.g., 08:30 or 14:45).",
+        "Validation Error", JOptionPane.ERROR_MESSAGE);
     return;
 }
 ```
@@ -123,7 +124,7 @@ Adapt custom data structures to property metrics:
    - Adapt `sortByPrice(packages, low, high, ascending)` to sort property investment bundles by price (ascending/descending) or property valuation rating.
 
 #### Step 3: Database Layer (`database/DBConnection.java` & Schema Scripts)
-Create MySQL schema scripts `01_admin.sql` and `02_customers.sql`:
+Create MySQL schema scripts in `database/01_admin.sql` and `database/02_customers.sql`:
 ```sql
 CREATE DATABASE IF NOT EXISTS real_estate_db;
 USE real_estate_db;
@@ -181,4 +182,4 @@ Before submitting any derived project, run the following verification steps:
 1. `mvn compile` — Ensures 100% clean compilation with Java 21+.
 2. `mvn test` — Executes JUnit 5 unit tests for all custom data structures and models.
 3. `mvn javadoc:javadoc` — Confirms all classes, methods, and time complexities are documented without JavaDoc errors.
-4. **Database Verification:** Confirm database schema contains no project data except the single initial `admin` account (`admin` / `admin123`).
+4. **Database Verification:** Confirm database schema contains scripts `database/01_admin.sql` and `database/02_customers.sql`.

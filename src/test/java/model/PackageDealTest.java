@@ -16,7 +16,7 @@ public class PackageDealTest {
 
     @BeforeEach
     public void setUp() {
-        flight = new Flight("FL101", "NYC", "Paris (CDG)", "18:00", 450.0);
+        flight = new Flight("FL101", "NYC", "18:00", "Paris (CDG)", "06:30", 450.0);
         hotel = new Hotel("H202", "Le Hotel", "Paris", 4.7, 150.0);
         packageDeal = new PackageDeal(flight, hotel);
     }

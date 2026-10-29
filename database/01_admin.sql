@@ -13,12 +13,13 @@ CREATE TABLE IF NOT EXISTS users (
 INSERT IGNORE INTO users (username, password, role)
 VALUES ('admin', 'admin123', 'ADMIN');
 
--- Flight listings table (VARCHAR(5) stores strict HH:mm 24-hour military time, e.g. "08:30")
+-- Flight listings table
 CREATE TABLE IF NOT EXISTS flights (
     flight_id VARCHAR(20) PRIMARY KEY,
     departure VARCHAR(100) NOT NULL,
-    arrival VARCHAR(100) NOT NULL,
     departure_time VARCHAR(5) NOT NULL,
+    arrival VARCHAR(100) NOT NULL,
+    arrival_time VARCHAR(5) NOT NULL,
     price DOUBLE NOT NULL
 );
 

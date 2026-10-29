@@ -20,7 +20,7 @@ public class QuickSortTest {
 
     @BeforeEach
     public void setUp() {
-        defaultFlight = new Flight("FL001", "NYC", "LAX", "10:00", 100.0);
+        defaultFlight = new Flight("FL001", "NYC", "10:00", "LAX", "14:00", 100.0);
     }
 
     @Test

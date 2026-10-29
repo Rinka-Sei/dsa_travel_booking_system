@@ -146,8 +146,9 @@ public class PackagePanel extends JPanel implements ActionListener {
                 flights.add(new Flight(
                         rsF.getString("flight_id"),
                         rsF.getString("departure"),
-                        rsF.getString("arrival"),
                         rsF.getString("departure_time"),
+                        rsF.getString("arrival"),
+                        rsF.getString("arrival_time"),
                         rsF.getDouble("price")
                 ));
             }

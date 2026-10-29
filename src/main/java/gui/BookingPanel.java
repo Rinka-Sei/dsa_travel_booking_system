@@ -205,9 +205,8 @@ public class BookingPanel extends JPanel implements ActionListener {
                 if (rsF.next()) {
                     itinerary.append("[FLIGHT DETAILS]\n")
                             .append("Flight ID: ").append(rsF.getString("flight_id")).append("\n")
-                            .append("From: ").append(rsF.getString("departure")).append("\n")
-                            .append("To: ").append(rsF.getString("arrival")).append("\n")
-                            .append("Time: ").append(rsF.getInt("departure_time")).append(" HRS\n\n");
+                            .append("From: ").append(rsF.getString("departure")).append(" (").append(rsF.getString("departure_time")).append(" HRS)\n")
+                            .append("To: ").append(rsF.getString("arrival")).append(" (").append(rsF.getString("arrival_time")).append(" HRS)\n\n");
                 }
             } else {
                 itinerary.append("[FLIGHT DETAILS]: No flight booked.\n\n");
