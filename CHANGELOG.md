@@ -4,6 +4,31 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
+## [2026-10-30] - Functional Enhancements, Smart Pairing & Toggleable QuickSort
+
+### Added
+- **24-Hour Military Time Validation (`HH:mm`):**
+  - Updated `flights` schema to store departure times as `VARCHAR(5)` strings formatted as `"HH:mm"`.
+  - Added strict regex validation (`^([01]\d|2[0-3]):([0-5]\d)$`) in `FlightPanel.java` with warning dialogs for invalid time entries.
+  - Created SQL database scripts `01_admin.sql` (schema setup & admin seeding) and `02_customers.sql` (empty template enforcing live GUI seeding).
+- **Smart Destination-Matching Package Deals:**
+  - Implemented `PackageDeal.normalizeDestination()` and `PackageDeal.isDestinationMatch()` to pair flights and hotels strictly when destinations match.
+  - Ignores airport code suffixes and parenthetical indicators (e.g., Flight arrival `"Tokyo (NRT)"` matches Hotel location `"Tokyo"`).
+- **Toggleable QuickSort with Dynamic Directional Arrows:**
+  - Refactored `QuickSort.java` to support both Ascending and Descending sorting modes for price and hotel rating.
+  - Updated `PackagePanel.java` sort buttons (`btnSortPrice` and `btnSortRating`) with dynamic directional indicators (`"Sort Price (Ascending ↑)"` vs `"Sort Price (Descending ↓)"`).
+  - Enforced exclusive active indicator state clearing on inactive sort buttons.
+
+### Changed
+- **Unit Test Suite Expansion:**
+  - Updated `ds/FlightBSTTest.java` to test chronological sorting with string military time (`"08:30"`, `"12:00"`, `"14:45"`, `"22:15"`).
+  - Updated `ds/QuickSortTest.java` to verify both ascending and descending sorting modes across price and rating edge cases.
+  - Updated `model/PackageDealTest.java` to test destination normalization and smart matching rules.
+- **Documentation Updates:**
+  - Updated `README.md` and `master_prompt.md` framework guide with new patterns for military time validation, relational string pairing, and stateful UI sorting buttons.
+
+---
+
 ## [2026-10-30] - Framework Baseline, Blueprint & Quality Assurance Phase
 
 ### Added

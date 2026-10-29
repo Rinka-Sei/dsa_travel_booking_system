@@ -8,7 +8,7 @@ public class Flight {
     private String flightId;
     private String departure;
     private String arrival;
-    private int departureTime; // Format: 1430 for 2:30 PM
+    private String departureTime; // Format: "14:30" 24-hour military time
     private double price;
 
     /**
@@ -17,10 +17,10 @@ public class Flight {
      * @param flightId      the unique identifier for the flight
      * @param departure     the departure location
      * @param arrival       the arrival destination
-     * @param departureTime the departure time in HHMM 24-hour format (e.g. 1430)
+     * @param departureTime the departure time in strict HH:mm 24-hour military time format (e.g., "14:30")
      * @param price         the price of the flight
      */
-    public Flight(String flightId, String departure, String arrival, int departureTime, double price) {
+    public Flight(String flightId, String departure, String arrival, String departureTime, double price) {
         this.flightId = flightId;
         this.departure = departure;
         this.arrival = arrival;
@@ -56,11 +56,11 @@ public class Flight {
     }
 
     /**
-     * Gets the departure time.
+     * Gets the departure time in 24-hour military time format ("HH:mm").
      *
-     * @return the departure time in HHMM format
+     * @return the departure time string (e.g., "14:30")
      */
-    public int getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 

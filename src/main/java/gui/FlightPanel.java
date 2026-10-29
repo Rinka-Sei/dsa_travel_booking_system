@@ -15,7 +15,8 @@ import java.util.List;
 
 /**
  * Panel view for managing and searching flights.
- * Provides role-based administrative controls (Add/Remove Flight) and BST-sorted departure time rendering.
+ * Provides role-based administrative controls (Add/Remove Flight) with strict HH:mm 24-hour military time validation
+ * and BST-sorted departure time rendering.
  */
 public class FlightPanel extends JPanel implements ActionListener {
 
@@ -69,12 +70,12 @@ public class FlightPanel extends JPanel implements ActionListener {
             txtArr.setBounds(460, 10, 100, 25);
             add(txtArr);
 
-            JLabel lblTime = new JLabel("Time (HHMM):");
-            lblTime.setBounds(10, 45, 90, 25);
+            JLabel lblTime = new JLabel("Time (HH:mm):");
+            lblTime.setBounds(10, 45, 95, 25);
             add(lblTime);
 
             txtDepTime = new JTextField();
-            txtDepTime.setBounds(100, 45, 90, 25);
+            txtDepTime.setBounds(105, 45, 85, 25);
             add(txtDepTime);
 
             JLabel lblPrice = new JLabel("Price:");
@@ -116,7 +117,7 @@ public class FlightPanel extends JPanel implements ActionListener {
             }
         });
 
-        flightModel = new DefaultTableModel(new String[]{"ID", "Departure", "Arrival", "Time", "Price"}, 0);
+        flightModel = new DefaultTableModel(new String[]{"ID", "Departure", "Arrival", "Time (HH:mm)", "Price"}, 0);
         tblFlights = new JTable(flightModel);
         JScrollPane sp = new JScrollPane(tblFlights);
         sp.setBounds(10, isAdmin ? 120 : 45, 755, isAdmin ? 370 : 450);
@@ -127,19 +128,29 @@ public class FlightPanel extends JPanel implements ActionListener {
 
     /**
      * Handles action events for adding, deleting, and BST-sorting flight listings.
+     * Validates strict HH:mm 24-hour military time input format before adding flights.
      *
      * @param e the ActionEvent triggered
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
+            String timeInput = txtDepTime.getText().trim();
+            if (!timeInput.matches("^([01]\\d|2[0-3]):([0-5]\\d)$")) {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid Departure Time format! Please use 24-hour military time (HH:mm, e.g., 08:30 or 14:45).",
+                        "Validation Error",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement ps = conn.prepareStatement("INSERT INTO flights VALUES(?, ?, ?, ?, ?)")) {
-                ps.setString(1, txtFlightId.getText());
-                ps.setString(2, txtDep.getText());
-                ps.setString(3, txtArr.getText());
-                ps.setInt(4, Integer.parseInt(txtDepTime.getText()));
-                ps.setDouble(5, Double.parseDouble(txtFlightPrice.getText()));
+                ps.setString(1, txtFlightId.getText().trim());
+                ps.setString(2, txtDep.getText().trim());
+                ps.setString(3, txtArr.getText().trim());
+                ps.setString(4, timeInput);
+                ps.setDouble(5, Double.parseDouble(txtFlightPrice.getText().trim()));
                 ps.executeUpdate();
                 
                 txtFlightId.setText("");
@@ -192,7 +203,13 @@ public class FlightPanel extends JPanel implements ActionListener {
                  Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery("SELECT * FROM flights")) {
                 while (rs.next()) {
-                    Flight f = new Flight(rs.getString("flight_id"), rs.getString("departure"), rs.getString("arrival"), rs.getInt("departure_time"), rs.getDouble("price"));
+                    Flight f = new Flight(
+                            rs.getString("flight_id"),
+                            rs.getString("departure"),
+                            rs.getString("arrival"),
+                            rs.getString("departure_time"),
+                            rs.getDouble("price")
+                    );
                     insertMethod.invoke(bstInstance, f);
                 }
             }
@@ -209,7 +226,13 @@ public class FlightPanel extends JPanel implements ActionListener {
                  Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery("SELECT * FROM flights")) {
                 while (rs.next()) {
-                    flightModel.addRow(new Object[]{rs.getString("flight_id"), rs.getString("departure"), rs.getString("arrival"), rs.getInt("departure_time"), rs.getDouble("price")});
+                    flightModel.addRow(new Object[]{
+                            rs.getString("flight_id"),
+                            rs.getString("departure"),
+                            rs.getString("arrival"),
+                            rs.getString("departure_time"),
+                            rs.getDouble("price")
+                    });
                 }
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Error loading flights: " + ex.getMessage());
@@ -232,7 +255,13 @@ public class FlightPanel extends JPanel implements ActionListener {
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                flightModel.addRow(new Object[]{rs.getString("flight_id"), rs.getString("departure"), rs.getString("arrival"), rs.getInt("departure_time"), rs.getDouble("price")});
+                flightModel.addRow(new Object[]{
+                        rs.getString("flight_id"),
+                        rs.getString("departure"),
+                        rs.getString("arrival"),
+                        rs.getString("departure_time"),
+                        rs.getDouble("price")
+                });
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Search error: " + ex.getMessage());
