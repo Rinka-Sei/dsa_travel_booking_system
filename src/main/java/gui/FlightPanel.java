@@ -112,7 +112,7 @@ public class FlightPanel extends JPanel implements ActionListener {
             add(btnDelete);
         }
 
-        btnSortBST = new JButton("Load (BST Sorted)");
+        btnSortBST = new JButton("Reset & Sort (BST)");
         btnSortBST.setBounds(isAdmin ? 720 : 310, isAdmin ? 45 : 10, 155, 25);
         btnSortBST.addActionListener(this);
         add(btnSortBST);
@@ -256,6 +256,7 @@ public class FlightPanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Error removing flight: " + ex.getMessage());
             }
         } else if (e.getSource() == btnSortBST) {
+            txtSearchFlight.setText("");
             loadFlightsBST();
         }
     }
