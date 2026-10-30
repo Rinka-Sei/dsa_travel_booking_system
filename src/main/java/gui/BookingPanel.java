@@ -20,6 +20,7 @@ public class BookingPanel extends JPanel implements ActionListener {
     private JButton btnBook;
     private JButton btnItinerary;
     private JButton btnInvoice;
+    private JButton btnReport;
     private JButton btnCancel;
     private JTable tblBookings;
     private DefaultTableModel bookingModel;
@@ -62,12 +63,17 @@ public class BookingPanel extends JPanel implements ActionListener {
         add(btnItinerary);
 
         btnInvoice = new JButton("Invoice");
-        btnInvoice.setBounds(600, 10, 80, 25);
+        btnInvoice.setBounds(565, 10, 75, 25);
         btnInvoice.addActionListener(this);
         add(btnInvoice);
 
+        btnReport = new JButton("Report");
+        btnReport.setBounds(645, 10, 75, 25);
+        btnReport.addActionListener(this);
+        add(btnReport);
+
         btnCancel = new JButton("Cancel");
-        btnCancel.setBounds(685, 10, 80, 25);
+        btnCancel.setBounds(725, 10, 75, 25);
         btnCancel.addActionListener(this);
         add(btnCancel);
 
@@ -93,6 +99,8 @@ public class BookingPanel extends JPanel implements ActionListener {
             generateItinerary();
         } else if (e.getSource() == btnInvoice) {
             generateInvoice();
+        } else if (e.getSource() == btnReport) {
+            generateSystemReport();
         } else if (e.getSource() == btnCancel) {
             cancelBooking();
         }
@@ -283,6 +291,26 @@ public class BookingPanel extends JPanel implements ActionListener {
                 + "====================================";
 
         JOptionPane.showMessageDialog(this, invoice, "Invoice Details", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Generates and displays an executive administrative activity and revenue report.
+     */
+    private void generateSystemReport() {
+        try {
+            service.BookingManagementService bookingService = new service.BookingManagementService();
+            String reportText = bookingService.generateSystemSummaryReport();
+
+            JTextArea txtReport = new JTextArea(reportText);
+            txtReport.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+            txtReport.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(txtReport);
+            scrollPane.setPreferredSize(new java.awt.Dimension(500, 350));
+
+            JOptionPane.showMessageDialog(this, scrollPane, "System Activity & Revenue Report", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error generating report: " + ex.getMessage());
+        }
     }
 
     /**

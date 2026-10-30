@@ -14,7 +14,7 @@ INSERT IGNORE INTO users (username, password, role) VALUES
 ('customer9', 'pass123', 'CUSTOMER'),
 ('customer10', 'pass123', 'CUSTOMER');
 
--- Sample flights data (supporting bookings)
+-- 2. Sample flights data (supporting bookings)
 INSERT IGNORE INTO flights (flight_id, departure, departure_time, arrival, arrival_time, price) VALUES
 ('FL101', 'NYC', '08:30', 'Tokyo (NRT)', '16:45', 850.00),
 ('FL102', 'LAX', '10:15', 'Paris (CDG)', '18:30', 720.00),
@@ -22,7 +22,7 @@ INSERT IGNORE INTO flights (flight_id, departure, departure_time, arrival, arriv
 ('FL104', 'ORD', '09:45', 'Rome (FCO)', '17:30', 780.00),
 ('FL105', 'MIA', '21:00', 'Sydney (SYD)', '06:30', 1100.00);
 
--- Sample hotels data (supporting bookings)
+-- 3. Sample hotels data (supporting bookings)
 INSERT IGNORE INTO hotels (hotel_id, name, location, rating, price_per_night) VALUES
 ('H201', 'Tokyo Grand Hotel', 'Tokyo', 4.8, 220.00),
 ('H202', 'Le Hotel Paris', 'Paris', 4.6, 190.00),
@@ -30,7 +30,7 @@ INSERT IGNORE INTO hotels (hotel_id, name, location, rating, price_per_night) VA
 ('H204', 'Roma Suites', 'Rome', 4.7, 160.00),
 ('H205', 'Sydney Harbour Resort', 'Sydney', 4.9, 250.00);
 
--- 2. Insert exactly 20 sample bookings connecting customers with flights and hotels
+-- 4. Insert exactly 20 sample bookings connecting customers with flights and hotels
 INSERT INTO bookings (username, flight_id, hotel_id, total_price) VALUES
 ('customer1', 'FL101', 'H201', 1070.00),
 ('customer1', 'FL102', 'H202', 910.00),
