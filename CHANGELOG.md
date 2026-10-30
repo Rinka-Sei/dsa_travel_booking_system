@@ -4,6 +4,30 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
+## [2026-10-30] - Master Prompt Blueprint Refinement & Multi-Project LLM Generation Guide
+
+### Added
+- **LLM Adaptation & Generation Guide (`PROMPT_GUIDE.md`):**
+  - Created a 1-step prompt template for Google Gemini, ChatGPT, and Claude to instantly generate complete, compliant implementations for any project item (Items 1–8 and Item 10).
+  - Included quick copy-paste prompts for all project domains with verification checklists.
+- **Refined Master Framework Blueprint (`master_prompt.md`):**
+  - Expanded Section 3 with exhaustive entity properties, custom data structures (BST, Hash Tables, Priority Queues, Linked Lists, Graphs), service methods, and GUI specifications across all 9 domain items.
+  - Standardized the non-negotiable 5-tier architecture (`model`, `ds`, `service`, `database`, `gui`) and CRUD update standards.
+
+---
+
+## [2026-10-30] - GUI Layout Dimension Expansion & Button Spacing Refinement
+
+### Changed
+- **Expanded Main Dashboard Dimensions:**
+  - Increased `MainFrame` window size from `850x700` to `960x720` to prevent component squishing and label truncations.
+  - Expanded inner `tabbedPane` bounds from `790x580` to `900x610` with repositioned Logout button (`810, 10`).
+- **Refined Panel Bounds & Button Layouts:**
+  - In `BookingPanel.java`, resized and spaced action buttons (`Book Package`, `View Itinerary`, `Invoice`, `Report`, `Cancel`) with clean margins and widened table bounds (`875x520`).
+  - In `FlightPanel.java`, `HotelPanel.java`, and `PackagePanel.java`, expanded panel bounds to `900x580` and widened tables to `875px`.
+
+---
+
 ## [2026-10-30] - Full CRUD Updates, Service Layer Architecture, Priority Queue & Executive Reports
 
 ### Added

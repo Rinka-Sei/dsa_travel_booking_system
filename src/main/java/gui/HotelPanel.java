@@ -37,7 +37,7 @@ public class HotelPanel extends JPanel implements ActionListener {
     public HotelPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
-        setBounds(0, 0, 790, 540);
+        setBounds(0, 0, 900, 580);
 
         boolean isAdmin = "ADMIN".equals(parent.getCurrentRole());
 
@@ -128,7 +128,7 @@ public class HotelPanel extends JPanel implements ActionListener {
             });
         }
         JScrollPane sp = new JScrollPane(tblHotels);
-        sp.setBounds(10, isAdmin ? 120 : 45, 755, isAdmin ? 370 : 450);
+        sp.setBounds(10, isAdmin ? 120 : 45, 875, isAdmin ? 425 : 500);
         add(sp);
 
         loadHotels();
