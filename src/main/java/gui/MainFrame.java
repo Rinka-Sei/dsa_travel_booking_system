@@ -33,7 +33,7 @@ public class MainFrame extends JFrame implements ActionListener {
         this.currentRole = role;
 
         setTitle("Travel Booking System - Dashboard [" + role + "]");
-        setSize(850, 700);
+        setSize(960, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -82,16 +82,16 @@ public class MainFrame extends JFrame implements ActionListener {
      */
     private void initDashboardComponents() {
         lblWelcome = new JLabel("Welcome, " + currentUser + " [" + currentRole + "]");
-        lblWelcome.setBounds(20, 10, 300, 25);
+        lblWelcome.setBounds(20, 10, 350, 25);
         add(lblWelcome);
 
         btnLogout = new JButton("Logout");
-        btnLogout.setBounds(700, 10, 100, 25);
+        btnLogout.setBounds(810, 10, 100, 25);
         btnLogout.addActionListener(this);
         add(btnLogout);
 
         tabbedPane = new JTabbedPane();
-        tabbedPane.setBounds(20, 40, 790, 580);
+        tabbedPane.setBounds(20, 40, 900, 610);
 
         flightPanel = new FlightPanel(this);
         hotelPanel = new HotelPanel(this);

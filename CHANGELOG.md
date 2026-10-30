@@ -4,6 +4,18 @@ All notable changes, milestones, refactoring phases, and documentation updates f
 
 ---
 
+## [2026-10-30] - GUI Layout Dimension Expansion & Button Spacing Refinement
+
+### Changed
+- **Expanded Main Dashboard Dimensions:**
+  - Increased `MainFrame` window size from `850x700` to `960x720` to prevent component squishing and label truncations.
+  - Expanded inner `tabbedPane` bounds from `790x580` to `900x610` with repositioned Logout button (`810, 10`).
+- **Refined Panel Bounds & Button Layouts:**
+  - In `BookingPanel.java`, resized and spaced action buttons (`Book Package`, `View Itinerary`, `Invoice`, `Report`, `Cancel`) with clean margins and widened table bounds (`875x520`).
+  - In `FlightPanel.java`, `HotelPanel.java`, and `PackagePanel.java`, expanded panel bounds to `900x580` and widened tables to `875px`.
+
+---
+
 ## [2026-10-30] - Full CRUD Updates, Service Layer Architecture, Priority Queue & Executive Reports
 
 ### Added

@@ -34,53 +34,53 @@ public class BookingPanel extends JPanel implements ActionListener {
     public BookingPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
-        setBounds(0, 0, 790, 540);
+        setBounds(0, 0, 900, 580);
 
         JLabel lblFlightId = new JLabel("Flight ID:");
-        lblFlightId.setBounds(10, 10, 70, 25);
+        lblFlightId.setBounds(10, 10, 60, 25);
         add(lblFlightId);
 
         txtBookFlightId = new JTextField();
-        txtBookFlightId.setBounds(80, 10, 90, 25);
+        txtBookFlightId.setBounds(70, 10, 80, 25);
         add(txtBookFlightId);
 
         JLabel lblHotelId = new JLabel("Hotel ID:");
-        lblHotelId.setBounds(180, 10, 70, 25);
+        lblHotelId.setBounds(160, 10, 60, 25);
         add(lblHotelId);
 
         txtBookHotelId = new JTextField();
-        txtBookHotelId.setBounds(240, 10, 90, 25);
+        txtBookHotelId.setBounds(220, 10, 80, 25);
         add(txtBookHotelId);
 
         btnBook = new JButton("Book Package");
-        btnBook.setBounds(340, 10, 120, 25);
+        btnBook.setBounds(315, 10, 125, 25);
         btnBook.addActionListener(this);
         add(btnBook);
 
         btnItinerary = new JButton("View Itinerary");
-        btnItinerary.setBounds(470, 10, 120, 25);
+        btnItinerary.setBounds(450, 10, 125, 25);
         btnItinerary.addActionListener(this);
         add(btnItinerary);
 
         btnInvoice = new JButton("Invoice");
-        btnInvoice.setBounds(565, 10, 75, 25);
+        btnInvoice.setBounds(585, 10, 90, 25);
         btnInvoice.addActionListener(this);
         add(btnInvoice);
 
         btnReport = new JButton("Report");
-        btnReport.setBounds(645, 10, 75, 25);
+        btnReport.setBounds(685, 10, 90, 25);
         btnReport.addActionListener(this);
         add(btnReport);
 
         btnCancel = new JButton("Cancel");
-        btnCancel.setBounds(725, 10, 75, 25);
+        btnCancel.setBounds(785, 10, 90, 25);
         btnCancel.addActionListener(this);
         add(btnCancel);
 
         bookingModel = new DefaultTableModel(new String[]{"Booking ID", "Customer", "Flight ID", "Hotel ID", "Total Price"}, 0);
         tblBookings = new JTable(bookingModel);
         JScrollPane sp = new JScrollPane(tblBookings);
-        sp.setBounds(10, 45, 755, 470);
+        sp.setBounds(10, 45, 875, 520);
         add(sp);
 
         loadBookings();

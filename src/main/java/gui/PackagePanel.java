@@ -39,27 +39,27 @@ public class PackagePanel extends JPanel implements ActionListener {
     public PackagePanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
-        setBounds(0, 0, 790, 540);
+        setBounds(0, 0, 900, 580);
 
         btnSortPrice = new JButton("Sort Price (Ascending ↑)");
-        btnSortPrice.setBounds(10, 10, 190, 25);
+        btnSortPrice.setBounds(10, 10, 200, 25);
         btnSortPrice.addActionListener(this);
         add(btnSortPrice);
 
         btnSortRating = new JButton("Sort Rating");
-        btnSortRating.setBounds(210, 10, 190, 25);
+        btnSortRating.setBounds(220, 10, 200, 25);
         btnSortRating.addActionListener(this);
         add(btnSortRating);
 
         btnBookPackage = new JButton("Book Selected Package");
-        btnBookPackage.setBounds(410, 10, 180, 25);
+        btnBookPackage.setBounds(430, 10, 200, 25);
         btnBookPackage.addActionListener(this);
         add(btnBookPackage);
 
         packageModel = new DefaultTableModel(new String[]{"Flight ID", "Flight Price", "Hotel ID", "Hotel Name", "Rating", "Total Price"}, 0);
         tblPackages = new JTable(packageModel);
         JScrollPane sp = new JScrollPane(tblPackages);
-        sp.setBounds(10, 45, 755, 470);
+        sp.setBounds(10, 45, 875, 520);
         add(sp);
 
         loadPackagesQuickSort("PRICE", priceAscending);

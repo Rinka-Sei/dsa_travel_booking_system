@@ -43,7 +43,7 @@ public class FlightPanel extends JPanel implements ActionListener {
     public FlightPanel(MainFrame parent) {
         this.parentFrame = parent;
         setLayout(null);
-        setBounds(0, 0, 790, 540);
+        setBounds(0, 0, 900, 580);
 
         boolean isAdmin = "ADMIN".equals(parent.getCurrentRole());
 
@@ -113,7 +113,7 @@ public class FlightPanel extends JPanel implements ActionListener {
         }
 
         btnSortBST = new JButton("Load (BST Sorted)");
-        btnSortBST.setBounds(isAdmin ? 615 : 310, isAdmin ? 45 : 10, 150, 25);
+        btnSortBST.setBounds(isAdmin ? 720 : 310, isAdmin ? 45 : 10, 155, 25);
         btnSortBST.addActionListener(this);
         add(btnSortBST);
 
@@ -148,7 +148,7 @@ public class FlightPanel extends JPanel implements ActionListener {
             });
         }
         JScrollPane sp = new JScrollPane(tblFlights);
-        sp.setBounds(10, isAdmin ? 115 : 45, 755, isAdmin ? 380 : 450);
+        sp.setBounds(10, isAdmin ? 115 : 45, 875, isAdmin ? 430 : 500);
         add(sp);
 
         loadFlightsBST();
