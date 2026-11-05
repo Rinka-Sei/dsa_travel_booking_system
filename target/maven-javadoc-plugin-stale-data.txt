@@ -1,0 +1,65 @@
+-J-Duser.language=
+-J-Duser.country=
+@options
+@packages
+@argfile
+-classpath
+'/home/mj/.m2/repository/com/mysql/mysql-connector-j/8.3.0/mysql-connector-j-8.3.0.jar:/home/mj/.m2/repository/com/google/protobuf/protobuf-java/3.25.1/protobuf-java-3.25.1.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'21'
+-sourcepath
+'/home/mj/Projects/dsa_travel_booking_system/src/main/java'
+-author
+-bottom
+'Copyright &#169; 1980. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'dsa_travel_booking_system 1.0-SNAPSHOT API'
+-notimestamp
+-use
+-version
+-windowtitle
+'dsa_travel_booking_system 1.0-SNAPSHOT API'
+database
+ds
+gui
+model
+service
+'/home/mj/Projects/dsa_travel_booking_system/src/main/java/Main.java'
+/home/mj/.m2/repository/com/mysql/mysql-connector-j/8.3.0/mysql-connector-j-8.3.0.jar = 1705352827000
+/home/mj/.m2/repository/com/google/protobuf/protobuf-java/3.25.1/protobuf-java-3.25.1.jar = 1700088488000
+/home/mj/Projects/dsa_travel_booking_system/src/main/java/Main.java = 1793878559164
+/home/mj/Projects/dsa_travel_booking_system/src/main/java = 1793878559164
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/Main.html = 1793878579933
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/element-list = 1793878580033
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/package-summary.html = 1793878580042
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/package-tree.html = 1793878580046
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/serialized-form.html = 1793878580154
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/package-use.html = 1793878580209
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/overview-tree.html = 1793878580221
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/index.html = 1793878580224
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/allclasses-index.html = 1793878580245
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/allpackages-index.html = 1793878580248
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/module-search-index.js = 1793878580249
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/package-search-index.js = 1793878580250
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/type-search-index.js = 1793878580250
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/member-search-index.js = 1793878580251
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/tag-search-index.js = 1793878580251
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/index-all.html = 1793878580272
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/search.html = 1793878580274
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/overview-summary.html = 1793878580275
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/help-doc.html = 1793878580279
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/stylesheet.css = 1793878580280
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/script.js = 1793878580281
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/copy.svg = 1793878580282
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/link.svg = 1793878580282
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/search.js = 1793878580284
+/home/mj/Projects/dsa_travel_booking_system/target/reports/apidocs/search-page.js = 1793878580285
