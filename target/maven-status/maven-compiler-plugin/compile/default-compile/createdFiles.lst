@@ -17,7 +17,7 @@ gui/FlightPanel$1.class
 gui/HotelPanel.class
 model/Flight.class
 model/User.class
-database/DBConnection.class
 gui/HotelPanel$1.class
+database/DBConnection.class
 model/Booking.class
 ds/FlightBST.class
