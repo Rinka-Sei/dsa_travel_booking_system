@@ -1,8 +1,0 @@
-ds/CustomerHashTableTest.class
-ds/FlightBSTTest.class
-gui/PackagePanelReflectionTest.class
-model/PackageDealTest.class
-ds/PackageQuickSortTest.class
-gui/FlightPanelReflectionTest.class
-service/FlightCatalogServiceTest.class
-service/CustomerRegistryServiceTest.class
